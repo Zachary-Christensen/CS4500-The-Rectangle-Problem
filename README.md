@@ -25,12 +25,15 @@ This project is based on this [Numberphile](https://www.youtube.com/watch?v=VZ25
         - Github Desktop: Use the `File > Clone repository...` option
     - `git fetch origin`
     - On Github Desktop: `Fetch origin` Button Top-Right
-4. If you want to download **and merge** new changes from the repo
+3. If you want to download **and merge** new changes from the repo
       - **Note**: *If you made changes to code that was altered by someone else, you should* `git stash` *to avoid losing your changes.*
           - ex. `git stash` -> `git pull` -> `git stash pop`
           - This will allow you to use the pull command and pick code to keep in any code conflicts
       - `git pull`
       - On Github Desktop: `Repository -> Pull`
+4. Can alternatively `checkout` to download different code versions and view it locally without overriding local changes.
+    - `git checkout <branchname>`
+    - Github Desktop: `Current Branch` menu, however only works for branches at the moment.
 5. After making changes to keep
     - Use `add` to select changes to add to a commit
       - `git add .` ('dot' selects all files in the directory, can also individually type every file name)
@@ -38,9 +41,6 @@ This project is based on this [Numberphile](https://www.youtube.com/watch?v=VZ25
       - Github Desktop: `Changes` Panel, checkmark indicates a file will be included in the next commit
     - `git commit -m "Some information about the changes you made"`
     - On Github Desktop: `Summary & Description` bottom-left under changes panel
-4.5. Can also `checkout` to download different code versions and view it locally without overriding local changes.
-  - `git checkout <branchname>`
-  - Github Desktop: No direct method yet.
 6. Pushing changes to group repo
     - Up to this point, any changes/commits are only local
         - To sync these changes with the Github repo, you must **push** those changes
