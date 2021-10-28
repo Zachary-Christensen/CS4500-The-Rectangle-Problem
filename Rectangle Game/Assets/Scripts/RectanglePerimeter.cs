@@ -1,17 +1,17 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
+/*
+ * Used to track corners and bounds of rectangles and the gameSquare
+ */
 public class RectanglePerimeter : MonoBehaviour
 {
     public SpriteRenderer SpriteRenderer { get; private set; }
     public Dictionary<Corner, Vector2> corners;
     public Bounds Bounds { get; private set; }
 
-
+    // in place of MonoBehaviour Start method so objects with this script can be created and initialized in the same place
     public void InitRectanglePerimeter()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -27,6 +27,7 @@ public class RectanglePerimeter : MonoBehaviour
         SetCorners();
     }
 
+    // called when corners need to be updated. Rotation does not affect this because the values from bounds still correspond to the intended corner
     public void SetCorners()
     {
         Bounds = SpriteRenderer.bounds;
@@ -39,7 +40,7 @@ public class RectanglePerimeter : MonoBehaviour
 
 
 
-
+    // used during debugging
     public override string ToString()
     {
         return $"Corners: tl{corners[Corner.TopLeft]}, tr{corners[Corner.TopRight]}, br{corners[Corner.BottomRight]}, bl{corners[Corner.BottomLeft]}";

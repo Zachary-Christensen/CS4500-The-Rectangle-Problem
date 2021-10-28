@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
+/*
+ * Creates sprites at positions to aide visual debugging when working with coordinates
+ */
 public class DebugSprites : MonoBehaviour
 {
 
