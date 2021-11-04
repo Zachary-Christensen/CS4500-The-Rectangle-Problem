@@ -32,7 +32,7 @@ public class GameSquare : MonoBehaviour
         rectanglePerimeter.corners[Corner.TopRight] = rectanglePerimeter.corners[Corner.BottomLeft];
         rectanglePerimeter.corners[Corner.BottomLeft] = tempRectangleCorner;
 
-        debugSprites.CreateDebugObject(rectanglePerimeter.corners[Corner.TopLeft]).SetSpriteRendererColor(Color.red);
+        //debugSprites.CreateDebugObject(rectanglePerimeter.corners[Corner.TopLeft]).SetSpriteRendererColor(Color.red);
 
     }
 

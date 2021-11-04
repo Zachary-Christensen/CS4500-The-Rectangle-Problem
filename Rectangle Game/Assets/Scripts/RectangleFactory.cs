@@ -14,13 +14,7 @@ public class RectangleFactory : MonoBehaviour
         rectangle.gameObject.name = $"Rectangle {Guid.NewGuid()}"; // Guid.NewGuid() so that every name is unique so that names can be compared to know when doing a correlation searched against all rectangle perimeters can know when trying to compare a rectangle to itself
         rectangle.InitRectangle();
 
-        // set color to random color
-        float minColorRange = 0.3f;
-        float maxColorRange = 0.99f;
-        rectangle.gameObject.SetSpriteRendererColor(
-            new Color(UnityEngine.Random.Range(minColorRange, maxColorRange), 
-            UnityEngine.Random.Range(minColorRange, maxColorRange), 
-            UnityEngine.Random.Range(minColorRange, maxColorRange), 1));
+        rectangle.gameObject.SetSpriteRendererColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
 
         // track rectangle in gameSquareInput
         gameSquareInput.AddRectangle(rectangle);
