@@ -15,7 +15,15 @@ using UnityEngine.UI;
  */
 public class GameSquareInput : MonoBehaviour
 {
+    private int idxN = 0;
+    private int[] sequenceOfN = new int[] { 2, 5, 8, 6, 10, 9, 7 };
+
+    public GameUI gameUI;
+
+    public Solutions solutions;
+
     public GameSquare gameSquare; //  the sprite renderer on gameSquare is used as the bounds for mouse input for selecting and moving the selected rectangle
+    public RectangleFactory rectangleFactory;
 
     public float snapDistance = 0.05f; // can be adjusted in editor
 
@@ -28,6 +36,7 @@ public class GameSquareInput : MonoBehaviour
     public Text winText; // currently the set as the same object as rectangleCommandText
     public Text rectangleCount;
     public Text rectangleCommandText; // tells keyboard key to move or drop rectangle
+    public Text topText; // writes the N being solved for and the current number of rectangles on the square
 
 
     public DebugSprites debugSprites;
@@ -35,17 +44,51 @@ public class GameSquareInput : MonoBehaviour
     // when true during update will try to move rectangle, when false rectangle is 'dropped'
     public bool doMoveRectangle = false;
 
+    private bool randomizeColorsClicked = false;
 
-    public void ResetGame()
+    public void RandomizeRectangleColors()
     {
+        StartCoroutine(RandomizeRectangleColorsRoutine());
+    }
+
+    // only allow colors to be changed 0.5f seconds after being changed so button can not be used to create flashing colors
+    private IEnumerator RandomizeRectangleColorsRoutine()
+    {
+        if (!randomizeColorsClicked)
+        {
+            randomizeColorsClicked = true;
+            rectangles.ForEach(x => x.gameObject.SetSpriteRendererColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)));
+            yield return new WaitForSeconds(0.5f);
+            randomizeColorsClicked = false;
+        }
+
+    }
+
+    public void DeleteSelectedRectangle()
+    {
+        DropRectangle();
+        rectanglePerimeters.Remove(selectedRectangle.RectanglePerimeter);
+        rectangles.Remove(selectedRectangle);
+        Destroy(selectedRectangle.gameObject);
+        UpdateRectangleCount();
+        // if there are other rectangles, set to last rectangle created
+        if (rectangles.Count > 0)
+        {
+            SetSelectedRectangle(rectangles[rectangles.Count - 1]);
+        }
+    }
+
+    public void ResetSquare()
+    {
+        selectedRectangle = null;
+        RemoveRectanglesFromRectanglePerimeters();
         foreach (var rectangle in rectangles)
         {
-            rectanglePerimeters.RemoveAll(x => x.name == rectangle.name);
             Destroy(rectangle.gameObject);
         }
         rectangles.RemoveRange(0, rectangles.Count);
 
-        rectangleCount.text = "N = 0";
+        UpdateRectangleCount();
         rectangleCommandText.text = "Welcome to the Rectangle Game";
     }
 
@@ -64,6 +107,27 @@ public class GameSquareInput : MonoBehaviour
             selectedRectangle.scaleDropdownValue = change.value;
             selectedRectangle.SetScale(dividend, divisor); 
         }
+    }
+
+    private void Start()
+    {
+        gameUI.EnableRules();
+        UpdateRectangleCount();
+    }
+
+    private void AdvanceN()
+    {
+        solutions.AddSolution(sequenceOfN[idxN], rectangles);
+        rectangles.RemoveRange(0, rectangles.Count);
+        RemoveRectanglesFromRectanglePerimeters();
+
+        if (idxN < sequenceOfN.Length - 1) idxN++; // do not go past last solution in sequence
+        ResetSquare();
+    }
+
+    private void RemoveRectanglesFromRectanglePerimeters()
+    {
+        rectanglePerimeters.RemoveAll(x => x.name.ToUpper().Contains("RECTANGLE"));
     }
 
     private void Update()
@@ -93,8 +157,20 @@ public class GameSquareInput : MonoBehaviour
 
     public void AddRectangle()
     {
-        SetSelectedRectangle(gameSquare.AddRectangle());
-        rectangleCount.text = $"N = {rectangles.Count}";
+        SetSelectedRectangle(rectangleFactory.CreateRectangle());
+    }
+
+    public void UpdateRectangleCount()
+    {
+        rectangleCount.text = $"N = {rectangles.Count}. Solving N = {sequenceOfN[idxN]}";
+    }
+
+    public void AddCloneRectangle()
+    {
+        if (selectedRectangle != null)
+        {
+            SetSelectedRectangle(rectangleFactory.CreateClone(selectedRectangle));
+        }
     }
 
     // assigned to check win button click event in editor
@@ -109,7 +185,35 @@ public class GameSquareInput : MonoBehaviour
         string originalText = winText.text;
         if (CheckWin())
         {
-            winText.text = "You won!";
+            if (rectangles.Count == sequenceOfN[idxN])
+            {
+                winText.text = "You won!";
+
+                switch (sequenceOfN[idxN])
+                {
+                    case 5:
+                        gameUI.EnableNPlus3();
+                        break;
+                    case 6:
+                        gameUI.EnableNPlus4();
+                        break;
+                    case 9:
+                        gameUI.EnableAllNumbers();
+                        break;
+                    case 7:
+                        gameUI.EnableEndGamePanel();
+                        break;
+                    default:
+                        gameUI.EnableWin();
+                        break;
+                }
+
+                AdvanceN();
+            }
+            else
+            {
+                winText.text = "Wrong\nN";
+            }
         }
         else
         {
