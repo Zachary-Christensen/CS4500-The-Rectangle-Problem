@@ -16,6 +16,30 @@ public class GameUI : MonoBehaviour
     public GameObject winPanel;
     public GameObject endGamePanel;
 
+    private bool nPlus3Enabled = false;
+    public GameObject txtNPlus3;
+    private bool nPlus4Enabled = false;
+    public GameObject txtNPlus4;
+    private bool allNumbersEnabled = false;
+    public GameObject txtAllNumbers;
+
+    public void EnableNPlus3()
+    {
+        nPlus3Enabled = true;
+        txtNPlus3.SetActive(true);
+    }
+    public void EnableNPlus4()
+    {
+        nPlus4Enabled = true;
+        txtNPlus4.SetActive(true);
+    }
+
+    public void EnableAllNumbers()
+    {
+        allNumbersEnabled = true;
+        txtAllNumbers.SetActive(true);
+    }
+
     private void ShowPreviousSolutions()
     {
         previousSolutions.SetActive(true);
@@ -102,13 +126,13 @@ public class GameUI : MonoBehaviour
         gameRules.SetActive(false);
     }
 
-    public void EnableRules()
+    public void OpenRules()
     {
         HideGameUI();
         ShowRules();
     }
 
-    public void ReturnToGame()
+    public void OpenGame()
     {
         HideRules();
         HideNPlus3();
@@ -121,39 +145,49 @@ public class GameUI : MonoBehaviour
         ShowGameUI();
     }
 
-    public void EnableNPlus3()
+    public void OpenNPlus3()
     {
-        ShowNPlus3();
-        HideGameUI();
+        if (nPlus3Enabled)
+        {
+            ShowNPlus3();
+            HideGameUI(); 
+        }
     }
 
-    public void EnableNPlus4()
+    public void OpenNPlus4()
     {
-        ShowNPlus4();
-        HideGameUI();
+        if (nPlus4Enabled)
+        {
+            ShowNPlus4();
+            HideGameUI(); 
+        }
     }
 
-    public void EnableAllNumbers()
+    public void OpenAllNumbers()
     {
-        ShowAllNumbers();
-        HideGameUI();
+        if (allNumbersEnabled)
+        {
+            ShowAllNumbers();
+            HideGameUI(); 
+        }
     }
 
-    public void EnableWin()
+    public void OpenWin()
     {
         ShowWinPanel();
         HideGameUI();
     }
 
-    public void EnableEndGamePanel()
+    public void OpenEndGamePanel()
     {
         ShowEndGamePanel();
         HideGameUI();
     }
 
-    public void EnablePreviousSolutions()
+    public void OpenPreviousSolutions()
     {
         ShowPreviousSolutions();
         HideGameUI();
     }
+
 }
