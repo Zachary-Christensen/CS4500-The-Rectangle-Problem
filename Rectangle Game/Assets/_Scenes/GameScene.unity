@@ -4003,19 +4003,19 @@ MonoBehaviour:
     m_Options:
     - m_Text: 1
       m_Image: {fileID: 0}
+    - m_Text: 2/3
+      m_Image: {fileID: 0}
     - m_Text: 1/2
       m_Image: {fileID: 0}
     - m_Text: 1/3
       m_Image: {fileID: 0}
     - m_Text: 1/4
       m_Image: {fileID: 0}
+    - m_Text: 2/9
+      m_Image: {fileID: 0}
     - m_Text: 1/6
       m_Image: {fileID: 0}
     - m_Text: 1/9
-      m_Image: {fileID: 0}
-    - m_Text: 2/3
-      m_Image: {fileID: 0}
-    - m_Text: 2/9
       m_Image: {fileID: 0}
     - m_Text: 1/1
       m_Image: {fileID: 0}

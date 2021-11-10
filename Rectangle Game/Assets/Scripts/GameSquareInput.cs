@@ -45,6 +45,39 @@ public class GameSquareInput : MonoBehaviour
     public bool doMoveRectangle = false;
 
     private bool randomizeColorsClicked = false;
+    private bool scrollInput = false;
+
+    private IEnumerator ScrollInputRoutine()
+    {
+        if (!scrollInput)
+        {
+            scrollInput = true;
+            // if scroll to increase scale
+            if (Input.mouseScrollDelta.y > 0)
+            {
+                // if not on last option, then increment index
+                if (dropdownScale.value != dropdownScale.options.Count - 1) dropdownScale.value++;
+            }
+            else
+            {
+                // if not on first option, then decrement index
+                if (dropdownScale.value != 0) dropdownScale.value--;
+            }
+
+            yield return new WaitForSeconds(0.3f);
+            scrollInput = false;
+        }
+
+        yield return null;
+    }
+
+    private void DoRectangleScaleInput()
+    {
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            StartCoroutine(ScrollInputRoutine());
+        }
+    }
 
     public void RandomizeRectangleColors()
     {
@@ -141,6 +174,7 @@ public class GameSquareInput : MonoBehaviour
         if (selectedRectangle != null)
         {
             DoRectangleMoveInput(); // sets transform mode and runs transform mode that has been set
+            DoRectangleScaleInput();
         }
 
 
