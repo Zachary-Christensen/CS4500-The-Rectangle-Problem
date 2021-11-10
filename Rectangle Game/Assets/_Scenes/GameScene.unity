@@ -7534,7 +7534,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 444565962}
         m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-        m_MethodName: ReturnToGame
+        m_MethodName: OpenGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
