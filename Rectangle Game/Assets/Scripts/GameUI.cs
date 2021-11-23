@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
+    public GameSquareInput gameSquareInput;
+
     public GameObject gameUI;
     public GameObject gameRules;
     public GameObject previousSolutions;
@@ -15,6 +18,8 @@ public class GameUI : MonoBehaviour
     public GameObject allNumbers;
     public GameObject winPanel;
     public GameObject endGamePanel;
+    public GameObject hintPanel;
+    public Image hintImage;
 
     private bool nPlus3Enabled = false;
     public GameObject txtNPlus3;
@@ -22,7 +27,8 @@ public class GameUI : MonoBehaviour
     public GameObject txtNPlus4;
     private bool allNumbersEnabled = false;
     public GameObject txtAllNumbers;
-
+    private bool hintEnabled = true;
+    public GameObject txtHint;
     public void EnableNPlus3()
     {
         nPlus3Enabled = true;
@@ -101,6 +107,16 @@ public class GameUI : MonoBehaviour
         allNumbers.SetActive(false);
     }
 
+    private void ShowHint()
+    {
+        hintPanel.SetActive(true);
+    }
+
+    private void HideHint()
+    {
+        hintPanel.SetActive(false);
+    }
+
     private void ShowGameUI()
     {
         gameUI.SetActive(true);
@@ -141,8 +157,45 @@ public class GameUI : MonoBehaviour
         HideWinPanel();
         HideEndGamePanel();
         HidePreviousSolutions();
+        HideHint();
 
         ShowGameUI();
+        RenderSettings.skybox = gameSquareInput.skyboxes[gameSquareInput.idxN];
+    }
+
+    public void OpenHint()
+    {
+        if (hintEnabled)
+        {
+            string hint = "";
+            switch (gameSquareInput.idxN)
+            {
+                case 0:
+                    hint = "This one is easy";
+                    break;
+                case 1:
+                    hint = "Use one 1/2 scale rectangle";
+                    break;
+                case 2:
+                    hint = "Use the N + 3 rule on one of the rectangles";
+                    break;
+                case 3:
+                    hint = "Use four 2/3's rectangles";
+                    break;
+                case 4:
+                    hint = "Use the N + 4 rule with the N = 6 solution";
+                    break;
+                case 5:
+                    hint = "Use the N + 3 rule with the N = 6 solution";
+                    break;
+                case 6:
+                    hint = "Use five 1/3 rectangles";
+                    break;
+            }
+            txtHint.GetComponent<Text>().text = hint;
+            ShowHint();
+            HideGameUI();
+        }
     }
 
     public void OpenNPlus3()

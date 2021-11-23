@@ -8,6 +8,7 @@ public class RectangleFactory : MonoBehaviour
     public GameObject rectanglePrefab; // assigned in editor from prefab folder
     public GameSquareInput gameSquareInput; // everytime a rectangle is created, it must be added to gameSquareInput so it is accounted for during snap and check win routines
     public Transform rectangleParent; // gameSquare
+    private int orderInLayerCounter = 0;
 
     public Rectangle CreateRectangle()
     {
@@ -16,6 +17,7 @@ public class RectangleFactory : MonoBehaviour
         rectangle.InitRectangle();
 
         rectangle.gameObject.SetSpriteRendererColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f));
+        rectangle.gameObject.GetComponent<SpriteRenderer>().sortingOrder = orderInLayerCounter++;
 
         rectangle.transform.SetParent(rectangleParent); // set gameSquare as parent of rectangle
         rectangle.transform.localPosition = Vector3.zero; // move to center
@@ -23,7 +25,7 @@ public class RectangleFactory : MonoBehaviour
 
         // track rectangle in gameSquareInput
         gameSquareInput.AddRectangle(rectangle);
-        gameSquareInput.UpdateRectangleCount();
+        gameSquareInput.UpdateRectangleCountText();
         return rectangle;
     }
 

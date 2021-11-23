@@ -15,8 +15,15 @@ using UnityEngine.UI;
  */
 public class GameSquareInput : MonoBehaviour
 {
-    private int idxN = 0;
+    public Camera mainCamera;
+
+    public ParticleSystem snapParticleSystem;
+
+    public int idxN = 0;
     private int[] sequenceOfN = new int[] { 2, 5, 8, 6, 10, 9, 7 };
+
+    public List<Material> skyboxes;
+    
 
     public GameUI gameUI;
 
@@ -44,14 +51,15 @@ public class GameSquareInput : MonoBehaviour
     // when true during update will try to move rectangle, when false rectangle is 'dropped'
     public bool doMoveRectangle = false;
 
-    private bool randomizeColorsClicked = false;
-    private bool scrollInput = false;
+    private bool randomizeColorsRunning = false; // controls access to randomize color routine so can only be run several times a second
+    private bool changeSkyboxesRunning = false; // controls access to change skyboxes routine so can only be run several times a second
+    private bool scrollInputRunning = false; // controls access to change scale routine so can only be run several times a second
 
     private IEnumerator ScrollInputRoutine()
     {
-        if (!scrollInput)
+        if (!scrollInputRunning)
         {
-            scrollInput = true;
+            scrollInputRunning = true;
             // if scroll to increase scale
             if (Input.mouseScrollDelta.y > 0)
             {
@@ -65,14 +73,14 @@ public class GameSquareInput : MonoBehaviour
             }
 
             yield return new WaitForSeconds(0.3f);
-            scrollInput = false;
+            scrollInputRunning = false;
         }
 
         yield return null;
     }
 
     private void DoRectangleScaleInput()
-    {
+    { 
         if (Input.mouseScrollDelta.y != 0)
         {
             StartCoroutine(ScrollInputRoutine());
@@ -87,14 +95,13 @@ public class GameSquareInput : MonoBehaviour
     // only allow colors to be changed 0.5f seconds after being changed so button can not be used to create flashing colors
     private IEnumerator RandomizeRectangleColorsRoutine()
     {
-        if (!randomizeColorsClicked)
+        if (!randomizeColorsRunning)
         {
-            randomizeColorsClicked = true;
+            randomizeColorsRunning = true;
             rectangles.ForEach(x => x.gameObject.SetSpriteRendererColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)));
             yield return new WaitForSeconds(0.5f);
-            randomizeColorsClicked = false;
+            randomizeColorsRunning = false;
         }
-
     }
 
     public void DeleteSelectedRectangle()
@@ -103,7 +110,7 @@ public class GameSquareInput : MonoBehaviour
         rectanglePerimeters.Remove(selectedRectangle.RectanglePerimeter);
         rectangles.Remove(selectedRectangle);
         Destroy(selectedRectangle.gameObject);
-        UpdateRectangleCount();
+        UpdateRectangleCountText();
         // if there are other rectangles, set to last rectangle created
         if (rectangles.Count > 0)
         {
@@ -121,7 +128,7 @@ public class GameSquareInput : MonoBehaviour
         }
         rectangles.RemoveRange(0, rectangles.Count);
 
-        UpdateRectangleCount();
+        UpdateRectangleCountText();
         rectangleCommandText.text = "Welcome to the Rectangle Game";
     }
 
@@ -141,14 +148,17 @@ public class GameSquareInput : MonoBehaviour
             selectedRectangle.SetScale(dividend, divisor);
             
             // scale selected rectangle cursor
-            transform.localScale = Vector2.one * 0.07f * (selectedRectangle.transform.localScale.y > selectedRectangle.transform.localScale.x ? selectedRectangle.transform.localScale.y : selectedRectangle.transform.localScale.x);
+            transform.localScale = Vector2.one * 0.18f * (selectedRectangle.transform.localScale.y > selectedRectangle.transform.localScale.x ? selectedRectangle.transform.localScale.y : selectedRectangle.transform.localScale.x);
         }
     }
 
     private void Start()
     {
+        //mainCamera = Camera.main;
         gameUI.OpenRules();
-        UpdateRectangleCount();
+        UpdateRectangleCountText();
+
+        RenderSettings.skybox = skyboxes[0];
     }
 
     private void AdvanceN()
@@ -166,8 +176,34 @@ public class GameSquareInput : MonoBehaviour
         rectanglePerimeters.RemoveAll(x => x.name.ToUpper().Contains("RECTANGLE"));
     }
 
+    private void FixedUpdate()
+    {
+        if (doMoveRectangle)
+        {
+            foreach (var key in selectedRectangle.RectanglePerimeter.corners.Keys)
+            {
+                bool cornerFound = false;
+                foreach (var rectanglePerimeter in rectanglePerimeters)
+                {
+                    if (rectanglePerimeter.name == selectedRectangle.name || cornerFound) continue;
+                    foreach (var otherKey in rectanglePerimeter.corners.Keys)
+                    {
+                        if (key == otherKey || cornerFound) continue;
+                        if (selectedRectangle.RectanglePerimeter.corners[key] == rectanglePerimeter.corners[otherKey])
+                        {
+                            cornerFound = true;
+                            snapParticleSystem.transform.position = rectanglePerimeter.corners[otherKey];
+                            snapParticleSystem.Emit(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void Update()
     {
+
         if (GetMouseDown()) // if attempting mouseclick input
         {
             SelectRectangle(); // try to change selected rectangle
@@ -180,6 +216,11 @@ public class GameSquareInput : MonoBehaviour
         {
             DoRectangleMoveInput(); // sets transform mode and runs transform mode that has been set
             DoRectangleScaleInput();
+            DoRectangleRotateInput();
+
+            DoChangeRectangleInput();
+
+            
         }
 
 
@@ -194,14 +235,42 @@ public class GameSquareInput : MonoBehaviour
 
     }
 
+
+    private void DoChangeRectangleInput()
+    {
+        int rectangleIndex = rectangles.IndexOf(selectedRectangle);
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (rectangleIndex == rectangles.Count - 1) rectangleIndex = 0;
+            else rectangleIndex++;
+            SetSelectedRectangle(rectangles[rectangleIndex]);
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (rectangleIndex == 0) rectangleIndex = rectangles.Count - 1;
+            else rectangleIndex--;
+            SetSelectedRectangle(rectangles[rectangleIndex]);
+        }
+        
+    }
+
+    private void DoRectangleRotateInput()
+    {
+        if (Input.GetMouseButtonDown(1)) // right click
+        {
+            selectedRectangle.transform.Rotate(new Vector3(0, 0, 90));
+            selectedRectangle.RectanglePerimeter.SetCorners();
+        }
+    }
+
     public void AddRectangle()
     {
         SetSelectedRectangle(rectangleFactory.CreateRectangle());
     }
 
-    public void UpdateRectangleCount()
+    public void UpdateRectangleCountText()
     {
-        rectangleCount.text = $"N = {rectangles.Count}. Solving N = {sequenceOfN[idxN]}";
+        rectangleCount.text = $"N = {rectangles.Count}. Solve N = {sequenceOfN[idxN]}";
     }
 
     public void AddCloneRectangle()
@@ -220,12 +289,12 @@ public class GameSquareInput : MonoBehaviour
 
     private IEnumerator WinRoutine()
     {
-        string originalText = winText.text;
+        string originalText = "Check\nWin";// winText.text;
         if (CheckWin())
         {
             if (rectangles.Count == sequenceOfN[idxN])
             {
-                winText.text = "You won!";
+                //winText.text = "You won!";
 
                 switch (sequenceOfN[idxN])
                 {
@@ -325,7 +394,7 @@ public class GameSquareInput : MonoBehaviour
 
     public void RotateSelectedRectangle()
     {
-        if (!doMoveRectangle)
+        if (true)//!doMoveRectangle)
         {
             selectedRectangle.transform.Rotate(new Vector3(0, 0, 90));
             selectedRectangle.RectanglePerimeter.SetCorners(); 
@@ -486,7 +555,7 @@ public class GameSquareInput : MonoBehaviour
     // position of mouse from screen to world coordinates. transform.position coordinates are world coordinates, ie the coordinates of gameobjects
     public Vector2 GetMousePosition()
     {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return mainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     public bool GetMouseDown()
