@@ -61,7 +61,7 @@ public class GameSquareInput : MonoBehaviour
         {
             scrollInputRunning = true;
             // if scroll to increase scale
-            if (Input.mouseScrollDelta.y > 0)
+            if (Input.mouseScrollDelta.y < 0)
             {
                 // if not on last option, then increment index
                 if (dropdownScale.value != dropdownScale.options.Count - 1) dropdownScale.value++;
