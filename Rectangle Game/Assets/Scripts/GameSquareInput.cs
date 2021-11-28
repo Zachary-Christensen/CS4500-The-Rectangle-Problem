@@ -17,6 +17,8 @@ public class GameSquareInput : MonoBehaviour
 {
     public Camera mainCamera;
 
+    public AudioManager audioManager;
+
     public ParticleSystem snapParticleSystem;
 
     public int idxN = 0;
@@ -64,12 +66,20 @@ public class GameSquareInput : MonoBehaviour
             if (Input.mouseScrollDelta.y < 0)
             {
                 // if not on last option, then increment index
-                if (dropdownScale.value != dropdownScale.options.Count - 1) dropdownScale.value++;
+                if (dropdownScale.value != dropdownScale.options.Count - 1)
+                {
+                    audioManager.PlayScaleDown();
+                    dropdownScale.value++;
+                }
             }
             else
-            {
+            { 
                 // if not on first option, then decrement index
-                if (dropdownScale.value != 0) dropdownScale.value--;
+                if (dropdownScale.value != 0)
+                {
+                    audioManager.PlayScaleUp();
+                    dropdownScale.value--;
+                }
             }
 
             yield return new WaitForSeconds(0.3f);
@@ -258,8 +268,7 @@ public class GameSquareInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1)) // right click
         {
-            selectedRectangle.transform.Rotate(new Vector3(0, 0, 90));
-            selectedRectangle.RectanglePerimeter.SetCorners();
+            RotateSelectedRectangle();
         }
     }
 
@@ -289,12 +298,13 @@ public class GameSquareInput : MonoBehaviour
 
     private IEnumerator WinRoutine()
     {
-        string originalText = "Check\nWin";// winText.text;
+        string originalText = "Check\nSolution";// winText.text;
         if (CheckWin())
         {
             if (rectangles.Count == sequenceOfN[idxN])
             {
                 //winText.text = "You won!";
+                audioManager.PlayWin();
 
                 switch (sequenceOfN[idxN])
                 {
@@ -322,12 +332,14 @@ public class GameSquareInput : MonoBehaviour
             }
             else
             {
-                winText.text = "Wrong\nN";
+                audioManager.PlayWrongSolution();
+                winText.text = "Wrong\nSolution";
             }
         }
         else
         {
-            winText.text = "No win";
+            audioManager.PlayLose();
+            winText.text = "Wrong";
         }
         yield return new WaitForSeconds(2f);
         winText.text = originalText;
@@ -372,8 +384,9 @@ public class GameSquareInput : MonoBehaviour
 
     private void DoRectangleMoveInput()
     {
-        if (Input.GetKeyDown(KeyCode.M) && !doMoveRectangle) // if start move routine
+        if (Input.GetKeyDown(KeyCode.M)) // if start move routine
         {
+            audioManager.PlayMove();
             doMoveRectangle = true;
             rectangleCommandText.text = "press (d) to drop rectangle";
         }
@@ -381,6 +394,7 @@ public class GameSquareInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.D))
         {
+            audioManager.PlayDrop();
             DropRectangle();
         }
 
@@ -414,8 +428,9 @@ public class GameSquareInput : MonoBehaviour
 
     public void RotateSelectedRectangle()
     {
-        if (true)//!doMoveRectangle)
+        if (selectedRectangle != null)
         {
+            audioManager.PlayRotate();
             selectedRectangle.transform.Rotate(new Vector3(0, 0, 90));
             selectedRectangle.RectanglePerimeter.SetCorners(); 
         }

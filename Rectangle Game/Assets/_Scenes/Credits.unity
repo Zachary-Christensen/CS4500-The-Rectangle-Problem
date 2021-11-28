@@ -845,9 +845,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Skyboxes by Calinou are licensed under CC BY 3.0\nlink to skyboxes https://opengameart.org/content/elyvisions-skyboxes\nlink
-    to Calinou's profile https://opengameart.org/users/calinou \nlink to license
-    https://creativecommons.org/licenses/by/3.0/\n\n\n\n"
+  m_Text: "Skyboxes by Calinou are licensed under CC BY 3.0\n\tlink to skyboxes https://opengameart.org/content/elyvisions-skyboxes\n\tlink
+    to Calinou's profile https://opengameart.org/users/calinou \n\tlink to license
+    https://creativecommons.org/licenses/by/3.0/\n\nSound Effects by Eric Matyas
+    at https://www.soundimage.org\n\n\n"
 --- !u!222 &2004656650
 CanvasRenderer:
   m_ObjectHideFlags: 0
