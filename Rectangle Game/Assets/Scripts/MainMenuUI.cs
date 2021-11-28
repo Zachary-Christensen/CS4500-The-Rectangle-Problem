@@ -9,4 +9,9 @@ public class MainMenuUI : MonoBehaviour
     {
         SceneManager.LoadScene("GameScene");
     }
+
+    public void OpenCredits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
 }

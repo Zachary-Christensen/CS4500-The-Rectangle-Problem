@@ -152,6 +152,12 @@ public class GameUI : MonoBehaviour
         gameRules.SetActive(false);
     }
 
+    public void OpenCredits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
+
     public void OpenRules()
     {
         HideGameUI();
