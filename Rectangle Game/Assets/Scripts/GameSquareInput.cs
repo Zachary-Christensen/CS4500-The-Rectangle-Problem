@@ -154,6 +154,8 @@ public class GameSquareInput : MonoBehaviour
 
         if (selectedRectangle != null)
         {
+            snapParticleSystem.transform.localScale = Vector3.one * Mathf.Sqrt((float)dividend / divisor);
+
             selectedRectangle.scaleDropdownValue = change.value;
             selectedRectangle.SetScale(dividend, divisor);
             
