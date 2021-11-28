@@ -13,13 +13,13 @@ public class GameUI : MonoBehaviour
     public GameObject previousSolutions;
     public Solutions solutions;
 
+    public GameObject returnToMainMenu;
     public GameObject nPlus3;
     public GameObject nPlus4;
     public GameObject allNumbers;
     public GameObject winPanel;
     public GameObject endGamePanel;
     public GameObject hintPanel;
-    public Image hintImage;
 
     private bool nPlus3Enabled = false;
     public GameObject txtNPlus3;
@@ -44,6 +44,16 @@ public class GameUI : MonoBehaviour
     {
         allNumbersEnabled = true;
         txtAllNumbers.SetActive(true);
+    }
+
+    private void ShowReturnToMainMenu()
+    {
+        returnToMainMenu.SetActive(true);
+    }
+
+    private void HideReturnToMainMenu()
+    {
+        returnToMainMenu.SetActive(false);
     }
 
     private void ShowPreviousSolutions()
@@ -148,6 +158,11 @@ public class GameUI : MonoBehaviour
         ShowRules();
     }
 
+    public void OpenReturnToMainMenu()
+    {
+        HideGameUI();
+        ShowReturnToMainMenu();
+    }
     public void OpenGame()
     {
         HideRules();
@@ -158,6 +173,7 @@ public class GameUI : MonoBehaviour
         HideEndGamePanel();
         HidePreviousSolutions();
         HideHint();
+        HideReturnToMainMenu();
 
         ShowGameUI();
         RenderSettings.skybox = gameSquareInput.skyboxes[gameSquareInput.idxN];
