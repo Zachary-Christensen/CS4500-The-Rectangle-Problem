@@ -338,14 +338,34 @@ public class GameSquareInput : MonoBehaviour
         Vector2 mousePosition = GetMousePosition(); 
         if (gameSquare.SpriteRenderer.bounds.Contains(mousePosition)) // only test if clicked inside the gameSquare
         {
+            List<Rectangle> rectanglesOverlappedByMousePosition = new List<Rectangle>();
             // find the first rectangle in the list whose sprite renderer contains the position of the mouse and set it as selected rectangle
             foreach (var rectangle in rectangles)
             {
                 if (rectangle.GetComponent<SpriteRenderer>().bounds.Contains(mousePosition)) // here I use GetComponent because this method is not called frequently
                 {
-                    SetSelectedRectangle(rectangle); // assigns selected rectangle and moved input position to the new selected rectangle
-                    break;
+                    rectanglesOverlappedByMousePosition.Add(rectangle);
                 }
+            }
+
+            if (rectanglesOverlappedByMousePosition.Count > 0)
+            {
+                int indexOfSelectedRectangle = rectangles.IndexOf(selectedRectangle);
+                int indexOfNewSelectedRectangle = -1;
+                int maxIndex = -1;
+                foreach (var rectangle in rectanglesOverlappedByMousePosition)
+                {
+                    int rectIndex = rectangles.IndexOf(rectangle);
+
+                    if (rectIndex < indexOfSelectedRectangle && (rectIndex > indexOfNewSelectedRectangle || indexOfNewSelectedRectangle == -1))
+                    {
+                        indexOfNewSelectedRectangle = rectIndex;
+                    }
+
+                    if (rectIndex > maxIndex) maxIndex = rectIndex;
+                }
+                if (indexOfNewSelectedRectangle == -1) indexOfNewSelectedRectangle = maxIndex;
+                SetSelectedRectangle(rectangles[indexOfNewSelectedRectangle]); 
             }
         }
     }
