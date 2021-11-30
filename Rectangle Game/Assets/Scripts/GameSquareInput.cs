@@ -613,9 +613,15 @@ public class GameSquareInput : MonoBehaviour
         rectanglePerimeters.Add(rectanglePerimeter);
     }
 
-    // does not drop rectangle, so whatever mode was on the selected rectangle before calling this method will still be active
     private void SetSelectedRectangle(Rectangle rectangle)
     {
+        // Set sorting order of rectangles to newest on top. Then set selected rectangle above all rectangles
+        for (int i = 0; i < rectangles.Count; i++)
+        {
+            rectangles[i].RectanglePerimeter.SpriteRenderer.sortingOrder = i;
+        }
+        rectangle.RectanglePerimeter.SpriteRenderer.sortingOrder = rectangles.Count;
+
         transform.position = rectangle.transform.position;
         selectedRectangle = rectangle;
 
