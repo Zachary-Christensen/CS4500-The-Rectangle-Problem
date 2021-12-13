@@ -5831,7 +5831,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -5839,17 +5839,17 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Controls:
 
-    Move rectangle - m
+    Move Rectangle - M
 
-    Drop rectangle - d
+    Drop Rectangle - D
 
     Rotate
-    rectangle - right click
+    Rectangle - Right Click
 
-    Scale rectangle - scroll wheel up and down
+    Scale Rectangle - Scroll Wheel Up/Down
 
     Select
-    rectangle - left click rectangle, left and right arrow keys
+    Rectangle - Left Click Rectangle OR left/right Arrow Keys
 
     Onscreen buttons
     for the rest'
@@ -6273,18 +6273,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'The square must be completely covered by rectangles. Rectangles cannot
-    overlap or go outside the square.
-
-
-    Every rectangle is a 2:1 rectangle. Rectangles
-    can be moved, scaled, and rotated.
-
-
-    The goal is to cover the square using
-    a specified number of rectangles, or N. The solutions of N will be asked for
-    in order of difficulty, and lessons will be displayed upon success when they
-    apply. Good luck!'
+  m_Text: "Every rectangle has a 2:1 size ratio. Rectangles can be moved, scaled,
+    and rotated.\n\nGoal:\nCompletely cover the square with rectangles with no overlaps
+    or leaks. Use the specified number of rectangles, displayed as N=count. \n\nEach
+    level increases in difficulty and requires a different quantity of rectangles.
+    Use lessons and hints to reuse previous solutions. Good luck!"
 --- !u!222 &1163148111
 CanvasRenderer:
   m_ObjectHideFlags: 0

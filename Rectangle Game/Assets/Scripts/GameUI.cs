@@ -196,7 +196,7 @@ public class GameUI : MonoBehaviour
                     hint = "This one is easy";
                     break;
                 case 1:
-                    hint = "Use one 1/2 scale rectangle";
+                    hint = "Use one 1/1 scale rectangle";
                     break;
                 case 2:
                     hint = "Use the N + 3 rule on one of the rectangles";
