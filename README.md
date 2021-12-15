@@ -25,9 +25,8 @@ This project will provide pre-built executables that will run the program.
 
 ## It is recommended to use the version currently hosted on the [Itch.io project web page](https://br36b.itch.io/the-rectangle-problem) for ease of access. Select Run Game and it will begin execution.
 
-
 ### Windows
-1. Download the latest release from the Github repository.
+1. Download the latest [release](https://github.com/br36b/CS4500-The-Rectangle-Problem/releases) from the Github repository.
 2. Open the File Explorer 
 3. Locate the download and right click
     - Go down the options and extract the files
@@ -42,7 +41,7 @@ This project will provide pre-built executables that will run the program.
 ### MacOS
 ##### Due to security presets on MacOS this may be more difficult. The web version is recommended for simplicity.
 
-1. Download the latest release from the Github repository.
+1. Download the latest [release](https://github.com/br36b/CS4500-The-Rectangle-Problem/releases) from the Github repository.
 2. Open with Archive Utility (default)
 3. Open Terminal (inside Launchpad)
     - `cd Downloads/MacOS\ Installation\ Rectangle\ Game.app/Contents/MacOS`
@@ -50,7 +49,7 @@ This project will provide pre-built executables that will run the program.
     - `./Rectangle\ Game`
 
 ### Linux
-1. Download the latest release from the Github repository.
+1. Download the latest [release](https://github.com/br36b/CS4500-The-Rectangle-Problem/releases) from the Github repository.
 2. Open the terminal 
 3. Change directories to your configured download folder
 4. Unzip the compressed folder
