@@ -386,7 +386,7 @@ public class RectangleController : MonoBehaviour
             selectedRectangle.SetScale(dividend, divisor);
 
             // scale selected rectangle cursor
-            transform.localScale = Vector2.one * 0.18f * (selectedRectangle.transform.localScale.y > selectedRectangle.transform.localScale.x ? selectedRectangle.transform.localScale.y : selectedRectangle.transform.localScale.x);
+            selectionCursor.transform.localScale = Vector2.one * 0.18f * (selectedRectangle.transform.localScale.y > selectedRectangle.transform.localScale.x ? selectedRectangle.transform.localScale.y : selectedRectangle.transform.localScale.x);
         }
     }
 
