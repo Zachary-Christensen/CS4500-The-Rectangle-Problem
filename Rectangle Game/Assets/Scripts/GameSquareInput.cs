@@ -15,10 +15,10 @@ using UnityEngine.UI;
  */
 public class GameSquareInput : MonoBehaviour
 {
-    public Camera mainCamera;
 
     public AudioManager audioManager;
 
+    public UserInput userInput;
 
     public DropDownScaleController dropDownScaleController;
 
@@ -41,7 +41,6 @@ public class GameSquareInput : MonoBehaviour
 
     private void Start()
     {
-        mainCamera = Camera.main;
         gameUI.OpenRules();
         rectangleController.UpdateRectangleCountText();
     }
@@ -58,11 +57,11 @@ public class GameSquareInput : MonoBehaviour
     private void Update()
     {
 
-        if (GetMouseDown()) // if attempting mouseclick input
+        if (userInput.GetMouseDown()) // if attempting mouseclick input
         {
-            if (gameSquare.SpriteRenderer.bounds.Contains(GetMousePosition()))
+            if (gameSquare.SpriteRenderer.bounds.Contains(userInput.GetMousePosition()))
             {
-                rectangleController.SelectRectangle(GetMousePosition()); // try to change selected rectangle
+                rectangleController.SelectRectangle(userInput.GetMousePosition()); // try to change selected rectangle
             }
         }
 
@@ -88,7 +87,7 @@ public class GameSquareInput : MonoBehaviour
         {
             scrollInputRunning = true;
             // if scroll to increase scale
-            if (Input.mouseScrollDelta.y < 0)
+            if (userInput.GetScrollValue() < 0)
             {
                 // if not on last option, then increment index
                 if (dropDownScaleController.Increment()) audioManager.PlayScaleDown();
@@ -109,7 +108,7 @@ public class GameSquareInput : MonoBehaviour
 
     private void DoRectangleScaleInput()
     {
-        if (Input.mouseScrollDelta.y != 0)
+        if (userInput.GetScrollValue() != 0)
         {
             StartCoroutine(ScrollInputRoutine());
         }
@@ -117,7 +116,7 @@ public class GameSquareInput : MonoBehaviour
 
     public void DoRectangleRotateInput()
     {
-        if (Input.GetMouseButtonDown(1)) // right click
+        if (userInput.DoRotate()) // right click
         {
             if (rectangleController.RotateSelectedRectangle()) audioManager.PlayRotate();
         }
@@ -125,14 +124,14 @@ public class GameSquareInput : MonoBehaviour
 
     private void DoRectangleMoveInput()
     {
-        if (Input.GetKeyDown(KeyCode.M)) // if start move routine
+        if (userInput.DoMove()) // if start move routine
         {
             audioManager.PlayMove();
             rectangleController.doMoveRectangle = true;
             textController.SetRectangleCommandText("press (d) to drop rectangle");
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (userInput.DoDrop())
         {
             audioManager.PlayDrop();
             rectangleController.DropRectangle();
@@ -151,10 +150,9 @@ public class GameSquareInput : MonoBehaviour
          */
         if (rectangleController.doMoveRectangle)
         {
-            Vector2 newPosition = GetMousePosition();
-            if (gameSquare.SpriteRenderer.bounds.Contains(newPosition)) // only move cursor if will stay inside gameSquare
+            if (gameSquare.SpriteRenderer.bounds.Contains(userInput.GetMousePosition())) // only move cursor if will stay inside gameSquare
             {
-                rectangleController.MoveSelectedRectangle(newPosition); // moves selected rectangle by calculating newPosition
+                rectangleController.MoveSelectedRectangle(userInput.GetMousePosition()); // moves selected rectangle by calculating newPosition
             }
         }
     }
@@ -214,16 +212,6 @@ public class GameSquareInput : MonoBehaviour
         textController.SetWinText(originalText);
     }
 
-    public bool GetMouseDown()
-    {
-        return Input.GetMouseButtonDown(0);
-    }
-
-    // position of mouse from screen to world coordinates. transform.position coordinates are world coordinates, ie the coordinates of gameobjects
-    public Vector3 GetMousePosition()
-    {
-        Vector2 pos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        return new Vector3(pos.x, pos.y, 0);
-    }
+    
 
 }

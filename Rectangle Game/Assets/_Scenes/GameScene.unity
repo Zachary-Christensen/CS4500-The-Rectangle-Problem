@@ -2294,8 +2294,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75b0c64ef701e254e91d73eeb2d0426a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 123726072}
   audioManager: {fileID: 454598078}
+  userInput: {fileID: 0}
   dropDownScaleController: {fileID: 469028852}
   gameUI: {fileID: 444565962}
   gameSquare: {fileID: 779325637}
@@ -13589,6 +13589,7 @@ MonoBehaviour:
   snapDistance: 0.05
   particleSystemController: {fileID: 1961470179}
   solutions: {fileID: 433887008}
+  NController: {fileID: 1940164957}
   textController: {fileID: 1352689936}
 --- !u!4 &1464083809
 Transform:
@@ -17012,6 +17013,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1931385208}
   m_CullTransparentMesh: 1
+--- !u!1 &1940164956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1940164958}
+  - component: {fileID: 1940164957}
+  m_Layer: 0
+  m_Name: SequenceOfNController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1940164957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940164956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83bb71d284df72c4ca727a867c7ad813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1940164958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940164956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1958792606
 GameObject:
   m_ObjectHideFlags: 0

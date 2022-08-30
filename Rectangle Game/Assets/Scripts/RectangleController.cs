@@ -30,7 +30,7 @@ public class RectangleController : MonoBehaviour
 
     public Solutions solutions;
 
-    SequenceOfNController NController = new SequenceOfNController();
+    public SequenceOfNController NController;
     public TextController textController;
     public int IdxN => NController.IdxN;
     public int GetN => NController.GetN();

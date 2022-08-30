@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-public class SequenceOfNController
+public class SequenceOfNController : MonoBehaviour
 {
     public int IdxN { get; private set; } = 0;
     private readonly int[] sequenceOfN = new int[] { 2, 5, 8, 6, 10, 9, 7 };
