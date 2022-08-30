@@ -10,7 +10,7 @@ public class RectangleController : MonoBehaviour
     private readonly List<RectanglePerimeter> rectanglePerimeters = new List<RectanglePerimeter>(); // used to check for win and snap rectangle being moved. Includes rectanglePerimeter from gameSquare, ie not all rectanglePerimeters are rectangles
 
     private readonly List<Rectangle> rectangles = new List<Rectangle>(); // used to track rectangles to be selected and assign selected rectangle
-    public bool DoesRectangleCountEqualGoalCount => rectangles.Count == NController.GetN();
+    public bool DoesRectangleCountEqualGoalCount => rectangles.Count == sequenceOfNController.GetN();
     private Rectangle selectedRectangle; // used as rectangle in transform methods
     public SelectionCursor selectionCursor;
     public bool IsAnyRectangleSelected => selectedRectangle != null;
@@ -30,10 +30,9 @@ public class RectangleController : MonoBehaviour
 
     public Solutions solutions;
 
-    public SequenceOfNController NController;
+    public SequenceOfNController sequenceOfNController;
     public TextController textController;
-    public int IdxN => NController.IdxN;
-    public int GetN => NController.GetN();
+    public int GetN => sequenceOfNController.GetN();
 
     private Corner[] Corners => selectedRectangle.RectanglePerimeter.corners.Keys.ToArray();
 
@@ -83,7 +82,7 @@ public class RectangleController : MonoBehaviour
 
     public void UpdateRectangleCountText()
     {
-        textController.SetRectangleCountText($"N = {rectangles.Count}. Solve N = {NController.GetN()}");
+        textController.SetRectangleCountText($"N = {rectangles.Count}. Solve N = {sequenceOfNController.GetN()}");
     }
 
     public void AddCloneRectangle()
@@ -249,7 +248,7 @@ public class RectangleController : MonoBehaviour
                         foreach (var otherCornerKey in selectedRectangle.RectanglePerimeter.corners.Keys)
                         {
                             if (cornerKey == otherCornerKey) continue; // do not snap shared corners. This is not a problem with gameSquare rectanglePerimeter, because the corners on gameSquare are inversed
-                            if (Vector2.Distance(selectedRectangle.RectanglePerimeter.corners[cornerKey], rectanglePerimeter.corners[otherCornerKey]) < snapDistance * 1f)
+                            if (Vector2.Distance(selectedRectangle.RectanglePerimeter.corners[cornerKey], rectanglePerimeter.corners[otherCornerKey]) < snapDistance)
                             {
                                 closeToOtherCorner = true;
                                 closestCorner = cornerKey;
@@ -358,11 +357,11 @@ public class RectangleController : MonoBehaviour
 
     public void AdvanceN()
     {
-        solutions.AddSolution(NController.GetN(), rectangles);
+        solutions.AddSolution(sequenceOfNController.GetN(), rectangles);
         rectangles.RemoveRange(0, rectangles.Count);
         RemoveRectanglesFromRectanglePerimeters();
 
-        NController.AdvanceN();
+        sequenceOfNController.AdvanceN();
         ResetSquare();
     }
 

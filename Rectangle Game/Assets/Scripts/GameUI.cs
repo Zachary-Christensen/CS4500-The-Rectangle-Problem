@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-    public RectangleController rectangleController;
+    public SequenceOfNController sequenceOfNController;
 
     public GameObject gameUI;
     public GameObject gameRules;
@@ -192,7 +192,7 @@ public class GameUI : MonoBehaviour
         if (hintEnabled)
         {
             string hint = "";
-            switch (rectangleController.IdxN)
+            switch (sequenceOfNController.IdxN)
             {
                 case 0:
                     hint = "This one is easy";
