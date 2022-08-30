@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UserInput : MonoBehaviour
 {
-    public Camera mainCamera;
+    private Camera mainCamera;
 
 
     private void Awake()
@@ -12,7 +12,16 @@ public class UserInput : MonoBehaviour
         mainCamera = Camera.main;
     }
 
-    
+    public bool DoSelectNextRectangle()
+    {
+        return Input.GetKeyDown(KeyCode.RightArrow);
+    }
+    public bool DoSelectLastRectangle()
+    {
+        return Input.GetKeyDown(KeyCode.LeftArrow);
+    }
+
+
     public bool DoMove()
     {
         return Input.GetKeyDown(KeyCode.M);

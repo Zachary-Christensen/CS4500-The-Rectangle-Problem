@@ -1632,7 +1632,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 673053ea2dfde704cbbb887739a4e568, type: 2}
   - {fileID: 2100000, guid: f92395835d2962d48943f6e2784dccd5, type: 2}
   - {fileID: 2100000, guid: fc57169b800071842992c66b8d3198b9, type: 2}
-  rectangleController: {fileID: 1464083808}
+  sequenceOfNController: {fileID: 1940164957}
 --- !u!4 &404391608
 Transform:
   m_ObjectHideFlags: 0
@@ -1888,7 +1888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d9c2cb9115466439b460b7bfac4e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rectangleController: {fileID: 1464083808}
+  sequenceOfNController: {fileID: 0}
   gameUI: {fileID: 311756330}
   gameRules: {fileID: 1743873762}
   previousSolutions: {fileID: 598971895}
@@ -2261,7 +2261,7 @@ GameObject:
   - component: {fileID: 531711385}
   - component: {fileID: 531711386}
   m_Layer: 6
-  m_Name: GameSquareInput
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2295,12 +2295,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioManager: {fileID: 454598078}
-  userInput: {fileID: 0}
+  userInput: {fileID: 1439751005}
   dropDownScaleController: {fileID: 469028852}
   gameUI: {fileID: 444565962}
   gameSquare: {fileID: 779325637}
   textController: {fileID: 1352689936}
   rectangleController: {fileID: 1464083808}
+  sequenceOfNController: {fileID: 1940164957}
   debugSprites: {fileID: 939788734}
 --- !u!212 &531711385
 SpriteRenderer:
@@ -13319,6 +13320,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1436200617}
   m_CullTransparentMesh: 1
+--- !u!1 &1439751004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1439751006}
+  - component: {fileID: 1439751005}
+  m_Layer: 0
+  m_Name: UserInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1439751005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439751004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 246d8732eaa73e34a9b8b6dc9f76d8a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+--- !u!4 &1439751006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1439751004}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1453828364
 GameObject:
   m_ObjectHideFlags: 0
@@ -13585,11 +13631,10 @@ MonoBehaviour:
   selectionCursor: {fileID: 531711386}
   rectangleFactory: {fileID: 927850565}
   dropDownScaleController: {fileID: 469028852}
-  doMoveRectangle: 0
   snapDistance: 0.05
   particleSystemController: {fileID: 1961470179}
   solutions: {fileID: 433887008}
-  NController: {fileID: 1940164957}
+  sequenceOfNController: {fileID: 1940164957}
   textController: {fileID: 1352689936}
 --- !u!4 &1464083809
 Transform:

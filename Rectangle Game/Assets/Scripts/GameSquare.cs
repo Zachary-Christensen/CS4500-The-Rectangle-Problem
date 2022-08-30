@@ -11,9 +11,9 @@ public class GameSquare : MonoBehaviour
     public DebugSprites debugSprites;
 
     public RectangleController rectangleController;
-    public SpriteRenderer SpriteRenderer { get; private set; }
+    private SpriteRenderer SpriteRenderer { get; set; }
 
-
+    
     public void Start()
     {
         SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -33,6 +33,11 @@ public class GameSquare : MonoBehaviour
 
         //debugSprites.CreateDebugObject(rectanglePerimeter.corners[Corner.TopLeft]).SetSpriteRendererColor(Color.red);
 
+    }
+
+    public bool Contains(Vector3 point)
+    {
+        return SpriteRenderer.bounds.Contains(point);
     }
 
 }

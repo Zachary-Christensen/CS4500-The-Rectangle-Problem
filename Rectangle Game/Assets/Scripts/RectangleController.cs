@@ -20,8 +20,10 @@ public class RectangleController : MonoBehaviour
     public RectangleFactory rectangleFactory;
 
     public DropDownScaleController dropDownScaleController;
-    
-    public bool doMoveRectangle = false;
+
+
+    // when true during update will try to move rectangle, when false rectangle is 'dropped'
+    private bool doMoveRectangle = false;
 
 
     public float snapDistance = 0.05f; // can be adjusted in editor
@@ -32,7 +34,6 @@ public class RectangleController : MonoBehaviour
 
     public SequenceOfNController sequenceOfNController;
     public TextController textController;
-    public int GetN => sequenceOfNController.GetN();
 
     private Corner[] Corners => selectedRectangle.RectanglePerimeter.corners.Keys.ToArray();
 
@@ -64,7 +65,10 @@ public class RectangleController : MonoBehaviour
 
     public void EmitParticleOnSelectedRectangleCorners()
     {
-        particleSystemController.EmitAt(GetSelectedRectangleOverlappingCorners());
+        if (doMoveRectangle)
+        {
+            particleSystemController.EmitAt(GetSelectedRectangleOverlappingCorners()); 
+        }
     }
 
     public void DropRectangle()
@@ -185,9 +189,15 @@ public class RectangleController : MonoBehaviour
         return true;
     }
 
+    public void AllowMoveRectangle()
+    {
+        doMoveRectangle = true;
+    }
 
     public void MoveSelectedRectangle(Vector2 newPosition)
     {
+        if (!doMoveRectangle) return;
+
         selectionCursor.SetPosition(newPosition);
 
         bool closeToOtherCorner = false; // used so that when a corner is found close enough to snap to the routine will stop checking for other snaps to ensure corners are preferred to edges. Also used because I could not break out of the outer loop
@@ -331,22 +341,24 @@ public class RectangleController : MonoBehaviour
         DropRectangle();
     }
 
-    public void DoChangeRectangleInput()
+    
+
+    public void SelectLastRectangle()
     {
         int rectangleIndex = rectangles.IndexOf(selectedRectangle);
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            if (rectangleIndex == rectangles.Count - 1) rectangleIndex = 0;
-            else rectangleIndex++;
-            SetSelectedRectangle(rectangles[rectangleIndex]);
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (rectangleIndex == 0) rectangleIndex = rectangles.Count - 1;
-            else rectangleIndex--;
-            SetSelectedRectangle(rectangles[rectangleIndex]);
-        }
 
+        if (rectangleIndex == 0) rectangleIndex = rectangles.Count - 1;
+        else rectangleIndex--;
+        SetSelectedRectangle(rectangles[rectangleIndex]);
+    }
+
+    public void SelectNextRectangle()
+    {
+        int rectangleIndex = rectangles.IndexOf(selectedRectangle);
+
+        if (rectangleIndex == rectangles.Count - 1) rectangleIndex = 0;
+        else rectangleIndex++;
+        SetSelectedRectangle(rectangles[rectangleIndex]);
     }
 
     private void RemoveRectanglesFromRectanglePerimeters()
