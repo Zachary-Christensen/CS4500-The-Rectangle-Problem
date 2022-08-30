@@ -19,41 +19,68 @@ public class GameSquareInput : MonoBehaviour
 
     public AudioManager audioManager;
 
-    public ParticleSystemController particleSystemController;
 
-
-    SequenceOfNController NController = new SequenceOfNController();
-    public int IdxN => NController.IdxN;
-
+    public DropDownScaleController dropDownScaleController;
 
     public GameUI gameUI;
 
-    public Solutions solutions;
 
     public GameSquare gameSquare; //  the sprite renderer on gameSquare is used as the bounds for mouse input for selecting and moving the selected rectangle
-    public RectangleFactory rectangleFactory;
 
-    public float snapDistance = 0.05f; // can be adjusted in editor
 
-    private readonly List<RectanglePerimeter> rectanglePerimeters = new List<RectanglePerimeter>(); // used to check for win and snap rectangle being moved. Includes rectanglePerimeter from gameSquare, ie not all rectanglePerimeters are rectangles
+    public TextController textController;
 
-    private readonly List<Rectangle> rectangles = new List<Rectangle>(); // used to track rectangles to be selected and assign selected rectangle
-    private Rectangle selectedRectangle; // used as rectangle in transform methods
-
-    public Dropdown dropdownScale; // UI object from canvas
-    public Text winText; // currently the set as the same object as rectangleCommandText
-    public Text rectangleCount;
-    public Text rectangleCommandText; // tells keyboard key to move or drop rectangle
-    public Text topText; // writes the N being solved for and the current number of rectangles on the square
-
+    public RectangleController rectangleController;
 
     public DebugSprites debugSprites;
 
     // when true during update will try to move rectangle, when false rectangle is 'dropped'
-    public bool doMoveRectangle = false;
+    //public bool doMoveRectangle = false;
 
-    private bool randomizeColorsRunning = false; // controls access to randomize color routine so can only be run several times a second
     private bool scrollInputRunning = false; // controls access to change scale routine so can only be run several times a second
+
+    private void Start()
+    {
+        mainCamera = Camera.main;
+        gameUI.OpenRules();
+        rectangleController.UpdateRectangleCountText();
+    }
+
+   
+    private void FixedUpdate()
+    {
+        if (rectangleController.doMoveRectangle)
+        {
+            rectangleController.EmitParticleOnSelectedRectangleCorners();
+        }
+    }
+
+    private void Update()
+    {
+
+        if (GetMouseDown()) // if attempting mouseclick input
+        {
+            if (gameSquare.SpriteRenderer.bounds.Contains(GetMousePosition()))
+            {
+                rectangleController.SelectRectangle(GetMousePosition()); // try to change selected rectangle
+            }
+        }
+
+
+
+        // only attempt rectangle transform input if selected rectangle is assigned
+        if (rectangleController.IsAnyRectangleSelected)
+        {
+            DoRectangleMoveInput();
+
+            DoRectangleScaleInput();
+            DoRectangleRotateInput();
+
+            rectangleController.DoChangeRectangleInput();
+        }
+
+    }
+
 
     private IEnumerator ScrollInputRoutine()
     {
@@ -64,20 +91,13 @@ public class GameSquareInput : MonoBehaviour
             if (Input.mouseScrollDelta.y < 0)
             {
                 // if not on last option, then increment index
-                if (dropdownScale.value != dropdownScale.options.Count - 1)
-                {
-                    audioManager.PlayScaleDown();
-                    dropdownScale.value++;
-                }
+                if (dropDownScaleController.Increment()) audioManager.PlayScaleDown();
+
             }
             else
-            { 
+            {
                 // if not on first option, then decrement index
-                if (dropdownScale.value != 0)
-                {
-                    audioManager.PlayScaleUp();
-                    dropdownScale.value--;
-                }
+                if (dropDownScaleController.Decrement()) audioManager.PlayScaleUp();
             }
 
             yield return new WaitForSeconds(0.3f);
@@ -88,208 +108,54 @@ public class GameSquareInput : MonoBehaviour
     }
 
     private void DoRectangleScaleInput()
-    { 
+    {
         if (Input.mouseScrollDelta.y != 0)
         {
             StartCoroutine(ScrollInputRoutine());
         }
     }
 
-    public void RandomizeRectangleColors()
-    {
-        StartCoroutine(RandomizeRectangleColorsRoutine());
-    }
-
-    // only allow colors to be changed 0.5f seconds after being changed so button can not be used to create flashing colors
-    private IEnumerator RandomizeRectangleColorsRoutine()
-    {
-        if (!randomizeColorsRunning)
-        {
-            randomizeColorsRunning = true;
-            rectangles.ForEach(x => x.gameObject.SetSpriteRendererColor(UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)));
-            yield return new WaitForSeconds(0.5f);
-            randomizeColorsRunning = false;
-        }
-    }
-
-    public void DeleteSelectedRectangle()
-    {
-        DropRectangle();
-        rectanglePerimeters.Remove(selectedRectangle.RectanglePerimeter);
-        rectangles.Remove(selectedRectangle);
-        Destroy(selectedRectangle.gameObject);
-        UpdateRectangleCountText();
-        // if there are other rectangles, set to last rectangle created
-        if (rectangles.Count > 0)
-        {
-            SetSelectedRectangle(rectangles[rectangles.Count - 1]);
-        }
-    }
-
-    public void ResetSquare()
-    {
-        selectedRectangle = null;
-        RemoveRectanglesFromRectanglePerimeters();
-        foreach (var rectangle in rectangles)
-        {
-            Destroy(rectangle.gameObject);
-        }
-        rectangles.RemoveRange(0, rectangles.Count);
-
-        UpdateRectangleCountText();
-        rectangleCommandText.text = "Welcome to the Rectangle Game";
-    }
-
-    public void ScaleSelectedRectangle(Dropdown change)
-    {
-        int dividend = 1;
-        int divisor = 1;
-        if (change.value != 0)
-        {
-            dividend = Convert.ToInt32(change.captionText.text.Split('/')[0]);
-            divisor = Convert.ToInt32(change.captionText.text.Split('/')[1]);
-        }
-
-        if (selectedRectangle != null)
-        {
-            snapDistance = 0.2f * Mathf.Sqrt((float)dividend / divisor);
-
-            particleSystemController.SetScale((float)dividend / divisor);
-
-            selectedRectangle.scaleDropdownValue = change.value;
-            selectedRectangle.SetScale(dividend, divisor);
-            
-            // scale selected rectangle cursor
-            transform.localScale = Vector2.one * 0.18f * (selectedRectangle.transform.localScale.y > selectedRectangle.transform.localScale.x ? selectedRectangle.transform.localScale.y : selectedRectangle.transform.localScale.x);
-        }
-    }
-
-    private void Start()
-    {
-        //mainCamera = Camera.main;
-        gameUI.OpenRules();
-        UpdateRectangleCountText();
-    }
-
-    private void AdvanceN()
-    {
-        solutions.AddSolution(NController.GetN(), rectangles);
-        rectangles.RemoveRange(0, rectangles.Count);
-        RemoveRectanglesFromRectanglePerimeters();
-
-        NController.AdvanceN();
-        ResetSquare();
-    }
-
-    private void RemoveRectanglesFromRectanglePerimeters()
-    {
-        rectanglePerimeters.RemoveAll(x => x.name.ToUpper().Contains("RECTANGLE"));
-    }
-
-    private void FixedUpdate()
-    {
-        if (doMoveRectangle)
-        {
-            List<Vector2> positions = new List<Vector2>();
-
-            foreach (var key in selectedRectangle.RectanglePerimeter.corners.Keys)
-            {
-                bool cornerFound = false;
-                foreach (var rectanglePerimeter in rectanglePerimeters)
-                {
-                    if (rectanglePerimeter.name == selectedRectangle.name || cornerFound) continue;
-                    foreach (var otherKey in rectanglePerimeter.corners.Keys)
-                    {
-                        if (key == otherKey || cornerFound) continue;
-                        if (selectedRectangle.RectanglePerimeter.corners[key] == rectanglePerimeter.corners[otherKey])
-                        {
-                            cornerFound = true;
-                            positions.Add(rectanglePerimeter.corners[otherKey]);
-                        }
-                    }
-                }
-            }
-
-            particleSystemController.EmitAt(positions);
-        }
-    }
-
-    private void Update()
-    {
-
-        if (GetMouseDown()) // if attempting mouseclick input
-        {
-            SelectRectangle(); // try to change selected rectangle
-        }
-
-
-
-        // only attempt rectangle transform input if selected rectangle is assigned
-        if (selectedRectangle != null)
-        {
-            DoRectangleMoveInput(); // sets transform mode and runs transform mode that has been set
-            DoRectangleScaleInput();
-            DoRectangleRotateInput();
-
-            DoChangeRectangleInput();
-
-            
-        }
-
-
-        // used for debugging
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            foreach (var rectangle in rectanglePerimeters)
-            {
-                print($"{rectangle.name} {rectangle}");
-            }
-        }
-
-    }
-
-
-    private void DoChangeRectangleInput()
-    {
-        int rectangleIndex = rectangles.IndexOf(selectedRectangle);
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            if (rectangleIndex == rectangles.Count - 1) rectangleIndex = 0;
-            else rectangleIndex++;
-            SetSelectedRectangle(rectangles[rectangleIndex]);
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (rectangleIndex == 0) rectangleIndex = rectangles.Count - 1;
-            else rectangleIndex--;
-            SetSelectedRectangle(rectangles[rectangleIndex]);
-        }
-        
-    }
-
-    private void DoRectangleRotateInput()
+    public void DoRectangleRotateInput()
     {
         if (Input.GetMouseButtonDown(1)) // right click
         {
-            RotateSelectedRectangle();
+            if (rectangleController.RotateSelectedRectangle()) audioManager.PlayRotate();
         }
     }
 
-    public void AddRectangle()
+    private void DoRectangleMoveInput()
     {
-        SetSelectedRectangle(rectangleFactory.CreateRectangle());
-    }
-
-    public void UpdateRectangleCountText()
-    {
-        rectangleCount.text = $"N = {rectangles.Count}. Solve N = {NController.GetN()}";
-    }
-
-    public void AddCloneRectangle()
-    {
-        if (selectedRectangle != null)
+        if (Input.GetKeyDown(KeyCode.M)) // if start move routine
         {
-            SetSelectedRectangle(rectangleFactory.CreateClone(selectedRectangle));
+            audioManager.PlayMove();
+            rectangleController.doMoveRectangle = true;
+            textController.SetRectangleCommandText("press (d) to drop rectangle");
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            audioManager.PlayDrop();
+            rectangleController.DropRectangle();
+        }
+
+        /*
+         * Move routine works by:
+         *      getting the mouse position
+         *      checking that the mouse position is within the gameSquare
+         *      if it is, then this gameobject is moved to that position
+         *      
+         *      the position of this object acts as a cursor for the position of the input
+         *      the purpose of this objects position acting as a cursor is so that when a rectangle is moved, 
+         *          its new position is determined as if the rectangle was at the position of this object, not its actual position. 
+         *          If this does not happen, then a rectangle would snap and get stuck
+         */
+        if (rectangleController.doMoveRectangle)
+        {
+            Vector2 newPosition = GetMousePosition();
+            if (gameSquare.SpriteRenderer.bounds.Contains(newPosition)) // only move cursor if will stay inside gameSquare
+            {
+                rectangleController.MoveSelectedRectangle(newPosition); // moves selected rectangle by calculating newPosition
+            }
         }
     }
 
@@ -302,14 +168,14 @@ public class GameSquareInput : MonoBehaviour
     private IEnumerator WinRoutine()
     {
         string originalText = "Check\nSolution";// winText.text;
-        if (CheckWin())
+        if (rectangleController.CheckWin())
         {
-            if (rectangles.Count == NController.GetN())
+            if (rectangleController.DoesRectangleCountEqualGoalCount)
             {
                 //winText.text = "You won!";
                 audioManager.PlayWin();
 
-                switch (NController.GetN())
+                switch (rectangleController.GetN)
                 {
                     case 5:
                         gameUI.EnableNPlus3();
@@ -331,269 +197,21 @@ public class GameSquareInput : MonoBehaviour
                         break;
                 }
 
-                AdvanceN();
+                rectangleController.AdvanceN();
             }
             else
             {
                 audioManager.PlayWrongSolution();
-                winText.text = "Wrong\nSolution";
+                textController.SetWinText("Wrong\nSolution");
             }
         }
         else
         {
             audioManager.PlayLose();
-            winText.text = "Wrong";
+            textController.SetWinText("Wrong");
         }
         yield return new WaitForSeconds(2f);
-        winText.text = originalText;
-    }
-
-    private void SelectRectangle()
-    {
-        Vector2 mousePosition = GetMousePosition(); 
-        if (gameSquare.SpriteRenderer.bounds.Contains(mousePosition)) // only test if clicked inside the gameSquare
-        {
-            List<Rectangle> rectanglesOverlappedByMousePosition = new List<Rectangle>();
-            // find the first rectangle in the list whose sprite renderer contains the position of the mouse and set it as selected rectangle
-            foreach (var rectangle in rectangles)
-            {
-                if (rectangle.GetComponent<SpriteRenderer>().bounds.Contains(mousePosition)) // here I use GetComponent because this method is not called frequently
-                {
-                    rectanglesOverlappedByMousePosition.Add(rectangle);
-                }
-            }
-
-            if (rectanglesOverlappedByMousePosition.Count > 0)
-            {
-                int indexOfSelectedRectangle = rectangles.IndexOf(selectedRectangle);
-                int indexOfNewSelectedRectangle = -1;
-                int maxIndex = -1;
-                foreach (var rectangle in rectanglesOverlappedByMousePosition)
-                {
-                    int rectIndex = rectangles.IndexOf(rectangle);
-
-                    if (rectIndex < indexOfSelectedRectangle && (rectIndex > indexOfNewSelectedRectangle || indexOfNewSelectedRectangle == -1))
-                    {
-                        indexOfNewSelectedRectangle = rectIndex;
-                    }
-
-                    if (rectIndex > maxIndex) maxIndex = rectIndex;
-                }
-                if (indexOfNewSelectedRectangle == -1) indexOfNewSelectedRectangle = maxIndex;
-                SetSelectedRectangle(rectangles[indexOfNewSelectedRectangle]); 
-            }
-        }
-    }
-
-    private void DoRectangleMoveInput()
-    {
-        if (Input.GetKeyDown(KeyCode.M)) // if start move routine
-        {
-            audioManager.PlayMove();
-            doMoveRectangle = true;
-            rectangleCommandText.text = "press (d) to drop rectangle";
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            audioManager.PlayDrop();
-            DropRectangle();
-        }
-
-        /*
-         * Move routine works by:
-         *      getting the mouse position
-         *      checking that the mouse position is within the gameSquare
-         *      if it is, then this gameobject is moved to that position
-         *      
-         *      the position of this object acts as a cursor for the position of the input
-         *      the purpose of this objects position acting as a cursor is so that when a rectangle is moved, 
-         *          its new position is determined as if the rectangle was at the position of this object, not its actual position. 
-         *          If this does not happen, then a rectangle would snap and get stuck
-         */
-        if (doMoveRectangle)
-        {
-            Vector2 newPosition = GetMousePosition();
-            if (gameSquare.SpriteRenderer.bounds.Contains(newPosition)) // only move cursor if will stay inside gameSquare
-            {
-                transform.position = newPosition;
-                MoveSelectedRectangle(); // moves selected rectangle by calculating newPosition
-            }
-        }
-    }
-
-    private void DropRectangle()
-    {
-        doMoveRectangle = false;
-        rectangleCommandText.text = "press (m) to move rectangle";
-    }
-
-    public void RotateSelectedRectangle()
-    {
-        if (selectedRectangle != null)
-        {
-            audioManager.PlayRotate();
-            selectedRectangle.transform.Rotate(new Vector3(0, 0, 90));
-            selectedRectangle.RectanglePerimeter.SetCorners(); 
-        }
-    }
-
-    // returns true if valid solution, false if not
-    private bool CheckWin()
-    {
-        List<RectanglePerimeter> tempRectanglePerimeters = rectanglePerimeters;
-        // 2 foreach loops
-        // 1 to check that every rectangle perimeter has 4 corners touching other corners
-        // 1 to check all other rectangle perimeters against rectangle perimeter being checked from the outer foreach loop
-        foreach (var rectanglePerimeter in rectanglePerimeters)
-        {
-            int numberOfCornersMatched = 0; // there are situations where a rectangle can have 4 corner matches with one corner having no match. The only way to cause this though I believe would make another rectangle fail when it is then checked
-            foreach (var otherRectanglePerimeter in tempRectanglePerimeters)
-            {
-                if (rectanglePerimeter.gameObject.name == otherRectanglePerimeter.gameObject.name) continue; // do not compare a rectangle perimeter to itself
-
-                // check every corner against every other corner except corners that are the same. ie do not check top left corner against another top left corner. This would mean the rectangles are overlapped
-                foreach (var cornerKey in rectanglePerimeter.corners.Keys)
-                {
-                    foreach (var otherCornerKey in otherRectanglePerimeter.corners.Keys)
-                    {
-                        if (rectanglePerimeter.corners[cornerKey] == otherRectanglePerimeter.corners[otherCornerKey] && cornerKey != otherCornerKey)
-                        {
-                            numberOfCornersMatched++;
-                        }
-                        else if (rectanglePerimeter.corners[cornerKey] == otherRectanglePerimeter.corners[cornerKey]) // if the same corners have the same value then the rectangles are overlapped
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            if (numberOfCornersMatched < 4) // rectangle failed. Solution is not valid
-            {
-                return false;
-            }
-        }
-
-        // every corner had a match. return true
-        return true;
-    }
-
-
-    public void MoveSelectedRectangle()
-    {
-        Vector2 newPosition = transform.position; // transform.position has been updated with the new mouse position before this method was called
-        bool closeToOtherCorner = false; // used so that when a corner is found close enough to snap to the routine will stop checking for other snaps to ensure corners are preferred to edges. Also used because I could not break out of the outer loop
-
-        // search through all rectangle perimeters for snapping points. This includes the rectangle perimeter from gameSquare
-        foreach (var rectanglePerimeter in rectanglePerimeters)
-        {
-            if (rectanglePerimeter.gameObject.name == selectedRectangle.gameObject.name || closeToOtherCorner) // if it is the same rectangle or a corner has been found, then don't search for snap
-            {
-                continue;
-            }
-
-            float minDistance = 1000; // used to be able to snap to closest point
-            Corner closestCorner = Corner.Null; // the corner of the selected rectangle that will snap if a snap occurs
-            Vector2 closestPoint = Vector2.zero; // the point found on other rectangle that is closest to a corner of the selected rectangle
-
-            // iterate through the corners of the selected rectangle
-            for (int i = 0; i < 4; i++)
-            {
-                Corner corner = (Corner)i; // corner being evaluated on selected rectangle
-
-                // get position of corner as if selected rectangle's position is at origin
-                Vector2 cornerOffset = selectedRectangle.RectanglePerimeter.Bounds.extents; // extents gives position of top right corner
-                // change offset to correct corner by changing corresponding signs
-                switch (corner)
-                {
-                    case Corner.TopLeft:
-                        cornerOffset.x *= -1;
-                        break;
-                    case Corner.TopRight:
-                        break;
-                    case Corner.BottomRight:
-                        cornerOffset.y *= -1;
-                        break;
-                    case Corner.BottomLeft:
-                        cornerOffset.x *= -1;
-                        cornerOffset.y *= -1;
-                        break;
-                }
-
-                
-                Vector2 rectangleCornerFromInputPosition = transform.position + (Vector3)cornerOffset; // simulated corner position. Used instead of actual corner position so rectangle can snap and unsnap
-                Vector2 closestPointOnRectanglePerimeter = rectanglePerimeter.SpriteRenderer.bounds.ClosestPoint(rectangleCornerFromInputPosition); // gives closest point on bounds. Will give points from inside bounds. This is handled below by checking if the closest point was inside, and if so, then not allowing snapping to it
-
-                float distance = Vector2.Distance(closestPointOnRectanglePerimeter, rectangleCornerFromInputPosition); // distance of possible snap
-
-                // if the snap position is not inside the rectangle to snap to and is within snap distand and is closer than any other snaps found
-                if (!rectanglePerimeter.Bounds.Contains(rectangleCornerFromInputPosition) && distance < snapDistance && distance < minDistance)
-                {
-                    // update snap variables
-                    minDistance = distance;
-                    closestCorner = corner;
-                    closestPoint = closestPointOnRectanglePerimeter;
-
-                    // check the corner of the selected rectangle against the corners of the rectangle being snapped to. If any two corners are within snap distance, update the snap variables respectively and 'break' out of the outer loop by setting closeToOtherCorner to true
-                    foreach (var cornerKey in selectedRectangle.RectanglePerimeter.corners.Keys)
-                    {
-                        foreach (var otherCornerKey in selectedRectangle.RectanglePerimeter.corners.Keys)
-                        {
-                            if (cornerKey == otherCornerKey) continue; // do not snap shared corners. This is not a problem with gameSquare rectanglePerimeter, because the corners on gameSquare are inversed
-                            if (Vector2.Distance(selectedRectangle.RectanglePerimeter.corners[cornerKey], rectanglePerimeter.corners[otherCornerKey]) < snapDistance * 1f)
-                            {
-                                closeToOtherCorner = true;
-                                closestCorner = cornerKey;
-                                closestPoint = rectanglePerimeter.corners[otherCornerKey];
-                            } 
-                        }
-                    }
-                } 
-            }
-
-            // get new center from closestCorner at point closestPoint
-            if (closestCorner != Corner.Null)
-            {
-                switch (closestCorner)
-                {
-                    case Corner.TopLeft:
-                        newPosition = closestPoint + new Vector2(selectedRectangle.RectanglePerimeter.Bounds.extents.x, -selectedRectangle.RectanglePerimeter.Bounds.extents.y);
-                        break;
-                    case Corner.TopRight:
-                        newPosition = closestPoint + new Vector2(-selectedRectangle.RectanglePerimeter.Bounds.extents.x, -selectedRectangle.RectanglePerimeter.Bounds.extents.y);
-                        break;
-                    case Corner.BottomRight:
-                        newPosition = closestPoint + new Vector2(-selectedRectangle.RectanglePerimeter.Bounds.extents.x, selectedRectangle.RectanglePerimeter.Bounds.extents.y);
-                        break;
-                    case Corner.BottomLeft:
-                        newPosition = closestPoint + new Vector2(selectedRectangle.RectanglePerimeter.Bounds.extents.x, selectedRectangle.RectanglePerimeter.Bounds.extents.y);
-                        break;
-                }
-            }
-        }
-
-        // so a rectangle does not get stuck on a corner
-        // if the input cursor is further from the center of the rectangle than the rectangles smallest radius, then unsnap the rectangle and set to the position of the input cursor
-        if (Vector2.Distance(newPosition, transform.position) > 
-            (selectedRectangle.RectanglePerimeter.Bounds.extents.x < selectedRectangle.RectanglePerimeter.Bounds.extents.y ? selectedRectangle.RectanglePerimeter.Bounds.extents.x : selectedRectangle.RectanglePerimeter.Bounds.extents.y)
-            )
-        {
-            selectedRectangle.transform.position = transform.position;
-        }
-        // otherwise set to the new calculated position
-        else
-        {
-            selectedRectangle.transform.position = newPosition;
-
-        }
-        selectedRectangle.RectanglePerimeter.SetCorners();
-    }
-
-    // position of mouse from screen to world coordinates. transform.position coordinates are world coordinates, ie the coordinates of gameobjects
-    public Vector2 GetMousePosition()
-    {
-        return mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        textController.SetWinText(originalText);
     }
 
     public bool GetMouseDown()
@@ -601,34 +219,11 @@ public class GameSquareInput : MonoBehaviour
         return Input.GetMouseButtonDown(0);
     }
 
-    // used by rectangle factory so that anytime a rectangle is created, it will be added to the list of rectangles here in GameSquareInput
-    public void AddRectangle(Rectangle rectangle)
+    // position of mouse from screen to world coordinates. transform.position coordinates are world coordinates, ie the coordinates of gameobjects
+    public Vector3 GetMousePosition()
     {
-        rectangles.Add(rectangle);
-        rectanglePerimeters.Add(rectangle.RectanglePerimeter);
-    }
-
-    // used by gameSquare to add its rectanglePerimeter so it is accounted for during the check win and snap routines
-    public void AddRectanglePerimeter(RectanglePerimeter rectanglePerimeter)
-    {
-        rectanglePerimeters.Add(rectanglePerimeter);
-    }
-
-    private void SetSelectedRectangle(Rectangle rectangle)
-    {
-        // Set sorting order of rectangles to newest on top. Then set selected rectangle above all rectangles
-        for (int i = 0; i < rectangles.Count; i++)
-        {
-            rectangles[i].RectanglePerimeter.SpriteRenderer.sortingOrder = i;
-        }
-        rectangle.RectanglePerimeter.SpriteRenderer.sortingOrder = rectangles.Count;
-
-        transform.position = rectangle.transform.position;
-        selectedRectangle = rectangle;
-
-        dropdownScale.value = selectedRectangle.scaleDropdownValue;
-
-        DropRectangle();
+        Vector2 pos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        return new Vector3(pos.x, pos.y, 0);
     }
 
 }

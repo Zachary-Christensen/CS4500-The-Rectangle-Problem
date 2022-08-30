@@ -10,7 +10,7 @@ public class GameSquare : MonoBehaviour
 {
     public DebugSprites debugSprites;
 
-    public GameSquareInput gameSquareInput;
+    public RectangleController rectangleController;
     public SpriteRenderer SpriteRenderer { get; private set; }
 
 
@@ -21,7 +21,7 @@ public class GameSquare : MonoBehaviour
         RectanglePerimeter rectanglePerimeter = GetComponent<RectanglePerimeter>();
         rectanglePerimeter.InitRectanglePerimeter();
 
-        gameSquareInput.AddRectanglePerimeter(rectanglePerimeter);
+        rectangleController.AddRectanglePerimeter(rectanglePerimeter);
 
         // switch top <-> bottom and left <-> right edges so rectangle snapper and check win routines can treat the inside of the square as the outside
         Vector2 tempRectangleCorner = rectanglePerimeter.corners[Corner.TopLeft];

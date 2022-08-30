@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-    public GameSquareInput gameSquareInput;
+    public RectangleController rectangleController;
 
     public GameObject gameUI;
     public GameObject gameRules;
@@ -192,7 +192,7 @@ public class GameUI : MonoBehaviour
         if (hintEnabled)
         {
             string hint = "";
-            switch (gameSquareInput.IdxN)
+            switch (rectangleController.IdxN)
             {
                 case 0:
                     hint = "This one is easy";

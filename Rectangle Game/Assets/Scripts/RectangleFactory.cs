@@ -6,7 +6,7 @@ using UnityEngine;
 public class RectangleFactory : MonoBehaviour
 {
     public GameObject rectanglePrefab; // assigned in editor from prefab folder
-    public GameSquareInput gameSquareInput; // everytime a rectangle is created, it must be added to gameSquareInput so it is accounted for during snap and check win routines
+    public RectangleController rectangleController; // everytime a rectangle is created, it must be added to gameSquareInput so it is accounted for during snap and check win routines
     public Transform rectangleParent; // gameSquare
     private int orderInLayerCounter = 0;
 
@@ -24,8 +24,8 @@ public class RectangleFactory : MonoBehaviour
         rectangle.SetScale(1, 1); // setScale after setting transform parent because setting transform parent changes the scale
 
         // track rectangle in gameSquareInput
-        gameSquareInput.AddRectangle(rectangle);
-        gameSquareInput.UpdateRectangleCountText();
+        rectangleController.AddRectangle(rectangle);
+        rectangleController.UpdateRectangleCountText();
         return rectangle;
     }
 

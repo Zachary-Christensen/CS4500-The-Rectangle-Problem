@@ -6,7 +6,7 @@ using UnityEngine;
 public class SkyBoxController : MonoBehaviour
 {
     public List<Material> skyboxes;
-    public GameSquareInput gameSquareInput;
+    public RectangleController rectangleController;
 
     private void Awake()
     {
@@ -17,6 +17,6 @@ public class SkyBoxController : MonoBehaviour
 
     public void SetSkyBox()
     {
-        RenderSettings.skybox = skyboxes[gameSquareInput.IdxN];
+        RenderSettings.skybox = skyboxes[rectangleController.IdxN];
     }
 }

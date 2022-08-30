@@ -1457,9 +1457,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
-        m_MethodName: RotateSelectedRectangle
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
+        m_MethodName: DoRotateSelectedRectangle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1632,7 +1632,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 673053ea2dfde704cbbb887739a4e568, type: 2}
   - {fileID: 2100000, guid: f92395835d2962d48943f6e2784dccd5, type: 2}
   - {fileID: 2100000, guid: fc57169b800071842992c66b8d3198b9, type: 2}
-  gameSquareInput: {fileID: 531711384}
+  rectangleController: {fileID: 1464083808}
 --- !u!4 &404391608
 Transform:
   m_ObjectHideFlags: 0
@@ -1888,7 +1888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d9c2cb9115466439b460b7bfac4e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSquareInput: {fileID: 531711384}
+  rectangleController: {fileID: 1464083808}
   gameUI: {fileID: 311756330}
   gameRules: {fileID: 1743873762}
   previousSolutions: {fileID: 598971895}
@@ -1965,6 +1965,51 @@ MonoBehaviour:
   rotateSound: {fileID: 1654815357}
   scaleDownSound: {fileID: 1762481723}
   scaleUpSound: {fileID: 1376018962}
+--- !u!1 &469028851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 469028853}
+  - component: {fileID: 469028852}
+  m_Layer: 0
+  m_Name: DropDownController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &469028852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469028851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b07f42b57c56fb44bc9e28b239ad478, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdownScale: {fileID: 1012387030}
+--- !u!4 &469028853
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469028851}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &498890515
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,6 +2259,7 @@ GameObject:
   - component: {fileID: 531711383}
   - component: {fileID: 531711384}
   - component: {fileID: 531711385}
+  - component: {fileID: 531711386}
   m_Layer: 6
   m_Name: GameSquareInput
   m_TagString: Untagged
@@ -2250,19 +2296,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 123726072}
   audioManager: {fileID: 454598078}
-  particleSystemController: {fileID: 1961470179}
+  dropDownScaleController: {fileID: 469028852}
   gameUI: {fileID: 444565962}
-  solutions: {fileID: 433887008}
   gameSquare: {fileID: 779325637}
-  rectangleFactory: {fileID: 927850565}
-  snapDistance: 0.1
-  dropdownScale: {fileID: 1012387030}
-  winText: {fileID: 894372848}
-  rectangleCount: {fileID: 1034387271}
-  rectangleCommandText: {fileID: 1518270888}
-  topText: {fileID: 1034387271}
+  textController: {fileID: 1352689936}
+  rectangleController: {fileID: 1464083808}
   debugSprites: {fileID: 939788734}
-  doMoveRectangle: 0
 --- !u!212 &531711385
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2315,6 +2354,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &531711386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531711382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95204de99b71f54498329524181d8862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &533967168
 GameObject:
   m_ObjectHideFlags: 0
@@ -2399,8 +2450,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: AddCloneRectangle
         m_Mode: 1
         m_Arguments:
@@ -3562,8 +3613,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: RandomizeRectangleColors
         m_Mode: 1
         m_Arguments:
@@ -3976,7 +4027,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugSprites: {fileID: 939788734}
-  gameSquareInput: {fileID: 531711384}
+  rectangleController: {fileID: 1464083808}
 --- !u!114 &779325638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4556,7 +4607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectanglePrefab: {fileID: 3675177026607223308, guid: b8b017a70c51ce749b4fe7d75c01a678, type: 3}
-  gameSquareInput: {fileID: 531711384}
+  rectangleController: {fileID: 1464083808}
   rectangleParent: {fileID: 779325636}
 --- !u!4 &927850567
 Transform:
@@ -4836,8 +4887,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: AddRectangle
         m_Mode: 1
         m_Arguments:
@@ -5258,8 +5309,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: ScaleSelectedRectangle
         m_Mode: 2
         m_Arguments:
@@ -7307,8 +7358,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: DeleteSelectedRectangle
         m_Mode: 1
         m_Arguments:
@@ -12443,6 +12494,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334904832}
   m_CullTransparentMesh: 1
+--- !u!1 &1352689935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1352689937}
+  - component: {fileID: 1352689936}
+  m_Layer: 0
+  m_Name: TextController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1352689936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1352689935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b101e0b1408ef9498c7d3c10d37911f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  winText: {fileID: 894372848}
+  rectangleCount: {fileID: 1034387271}
+  rectangleCommandText: {fileID: 1518270888}
+  topText: {fileID: 0}
+--- !u!4 &1352689937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1352689935}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1374262791
 GameObject:
   m_ObjectHideFlags: 0
@@ -13079,8 +13178,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 531711384}
-        m_TargetAssemblyTypeName: GameSquareInput, Assembly-CSharp
+      - m_Target: {fileID: 1464083808}
+        m_TargetAssemblyTypeName: RectangleController, Assembly-CSharp
         m_MethodName: ResetSquare
         m_Mode: 1
         m_Arguments:
@@ -13454,6 +13553,58 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1464083807
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1464083809}
+  - component: {fileID: 1464083808}
+  m_Layer: 0
+  m_Name: RectangleController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1464083808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464083807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a462ae2a11fb3694fb14640935c9f33c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionCursor: {fileID: 531711386}
+  rectangleFactory: {fileID: 927850565}
+  dropDownScaleController: {fileID: 469028852}
+  doMoveRectangle: 0
+  snapDistance: 0.05
+  particleSystemController: {fileID: 1961470179}
+  solutions: {fileID: 433887008}
+  textController: {fileID: 1352689936}
+--- !u!4 &1464083809
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464083807}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1464724769
 GameObject:
   m_ObjectHideFlags: 0
