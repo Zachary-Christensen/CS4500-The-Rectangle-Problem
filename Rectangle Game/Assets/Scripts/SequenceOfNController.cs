@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 public class SequenceOfNController
 {
-    public int IdxN { get; set; } = 0;
+    public int IdxN { get; private set; } = 0;
     private readonly int[] sequenceOfN = new int[] { 2, 5, 8, 6, 10, 9, 7 };
     public int NCount => sequenceOfN.Length;
 
     public int GetN()
     {
         return sequenceOfN[IdxN];
+    }
+
+    public void AdvanceN()
+    {
+        IdxN++;
+    }
+
+    public void ResetN()
+    {
+        IdxN = 0;
     }
 }

@@ -25,9 +25,6 @@ public class GameSquareInput : MonoBehaviour
     public int IdxN => NController.IdxN;
 
 
-    public List<Material> skyboxes;
-    
-
     public GameUI gameUI;
 
     public Solutions solutions;
@@ -55,7 +52,6 @@ public class GameSquareInput : MonoBehaviour
     public bool doMoveRectangle = false;
 
     private bool randomizeColorsRunning = false; // controls access to randomize color routine so can only be run several times a second
-    private bool changeSkyboxesRunning = false; // controls access to change skyboxes routine so can only be run several times a second
     private bool scrollInputRunning = false; // controls access to change scale routine so can only be run several times a second
 
     private IEnumerator ScrollInputRoutine()
@@ -172,8 +168,6 @@ public class GameSquareInput : MonoBehaviour
         //mainCamera = Camera.main;
         gameUI.OpenRules();
         UpdateRectangleCountText();
-
-        RenderSettings.skybox = skyboxes[0];
     }
 
     private void AdvanceN()
@@ -182,7 +176,7 @@ public class GameSquareInput : MonoBehaviour
         rectangles.RemoveRange(0, rectangles.Count);
         RemoveRectanglesFromRectanglePerimeters();
 
-        if (NController.IdxN < NController.NCount - 1) NController.IdxN++; // do not go past last solution in sequence
+        if (NController.IdxN < NController.NCount - 1) NController.AdvanceN(); // do not go past last solution in sequence
         ResetSquare();
     }
 

@@ -12,6 +12,7 @@ public class GameUI : MonoBehaviour
     public GameObject gameRules;
     public GameObject previousSolutions;
     public Solutions solutions;
+    public SkyBoxController skyBoxController;
 
     public GameObject returnToMainMenu;
     public GameObject nPlus3;
@@ -182,7 +183,8 @@ public class GameUI : MonoBehaviour
         HideReturnToMainMenu();
 
         ShowGameUI();
-        RenderSettings.skybox = gameSquareInput.skyboxes[gameSquareInput.IdxN];
+        
+        skyBoxController.SetSkyBox();
     }
 
     public void OpenHint()
