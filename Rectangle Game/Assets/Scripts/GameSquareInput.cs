@@ -19,7 +19,8 @@ public class GameSquareInput : MonoBehaviour
 
     public AudioManager audioManager;
 
-    public ParticleSystem snapParticleSystem;
+    public ParticleSystemController particleSystemController;
+
 
     SequenceOfNController NController = new SequenceOfNController();
     public int IdxN => NController.IdxN;
@@ -153,7 +154,7 @@ public class GameSquareInput : MonoBehaviour
         {
             snapDistance = 0.2f * Mathf.Sqrt((float)dividend / divisor);
 
-            snapParticleSystem.transform.localScale = Vector3.one * Mathf.Sqrt((float)dividend / divisor);
+            particleSystemController.SetScale((float)dividend / divisor);
 
             selectedRectangle.scaleDropdownValue = change.value;
             selectedRectangle.SetScale(dividend, divisor);
@@ -176,7 +177,7 @@ public class GameSquareInput : MonoBehaviour
         rectangles.RemoveRange(0, rectangles.Count);
         RemoveRectanglesFromRectanglePerimeters();
 
-        if (NController.IdxN < NController.NCount - 1) NController.AdvanceN(); // do not go past last solution in sequence
+        NController.AdvanceN();
         ResetSquare();
     }
 
@@ -189,6 +190,8 @@ public class GameSquareInput : MonoBehaviour
     {
         if (doMoveRectangle)
         {
+            List<Vector2> positions = new List<Vector2>();
+
             foreach (var key in selectedRectangle.RectanglePerimeter.corners.Keys)
             {
                 bool cornerFound = false;
@@ -201,12 +204,13 @@ public class GameSquareInput : MonoBehaviour
                         if (selectedRectangle.RectanglePerimeter.corners[key] == rectanglePerimeter.corners[otherKey])
                         {
                             cornerFound = true;
-                            snapParticleSystem.transform.position = rectanglePerimeter.corners[otherKey];
-                            snapParticleSystem.Emit(1);
+                            positions.Add(rectanglePerimeter.corners[otherKey]);
                         }
                     }
                 }
             }
+
+            particleSystemController.EmitAt(positions);
         }
     }
 

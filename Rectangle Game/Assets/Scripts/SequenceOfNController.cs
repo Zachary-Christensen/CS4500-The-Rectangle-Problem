@@ -17,11 +17,7 @@ public class SequenceOfNController
 
     public void AdvanceN()
     {
-        IdxN++;
+        if (IdxN < sequenceOfN.Length - 1) IdxN++; // do not go past last solution in sequence
     }
 
-    public void ResetN()
-    {
-        IdxN = 0;
-    }
 }
