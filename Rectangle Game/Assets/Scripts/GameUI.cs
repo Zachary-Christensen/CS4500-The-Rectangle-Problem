@@ -182,7 +182,7 @@ public class GameUI : MonoBehaviour
         HideReturnToMainMenu();
 
         ShowGameUI();
-        RenderSettings.skybox = gameSquareInput.skyboxes[gameSquareInput.idxN];
+        RenderSettings.skybox = gameSquareInput.skyboxes[gameSquareInput.IdxN];
     }
 
     public void OpenHint()
@@ -190,7 +190,7 @@ public class GameUI : MonoBehaviour
         if (hintEnabled)
         {
             string hint = "";
-            switch (gameSquareInput.idxN)
+            switch (gameSquareInput.IdxN)
             {
                 case 0:
                     hint = "This one is easy";

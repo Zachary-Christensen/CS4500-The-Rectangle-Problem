@@ -21,8 +21,9 @@ public class GameSquareInput : MonoBehaviour
 
     public ParticleSystem snapParticleSystem;
 
-    public int idxN = 0;
-    private int[] sequenceOfN = new int[] { 2, 5, 8, 6, 10, 9, 7 };
+    SequenceOfNController NController = new SequenceOfNController();
+    public int IdxN => NController.IdxN;
+
 
     public List<Material> skyboxes;
     
@@ -177,11 +178,11 @@ public class GameSquareInput : MonoBehaviour
 
     private void AdvanceN()
     {
-        solutions.AddSolution(sequenceOfN[idxN], rectangles);
+        solutions.AddSolution(NController.GetN(), rectangles);
         rectangles.RemoveRange(0, rectangles.Count);
         RemoveRectanglesFromRectanglePerimeters();
 
-        if (idxN < sequenceOfN.Length - 1) idxN++; // do not go past last solution in sequence
+        if (NController.IdxN < NController.NCount - 1) NController.IdxN++; // do not go past last solution in sequence
         ResetSquare();
     }
 
@@ -283,7 +284,7 @@ public class GameSquareInput : MonoBehaviour
 
     public void UpdateRectangleCountText()
     {
-        rectangleCount.text = $"N = {rectangles.Count}. Solve N = {sequenceOfN[idxN]}";
+        rectangleCount.text = $"N = {rectangles.Count}. Solve N = {NController.GetN()}";
     }
 
     public void AddCloneRectangle()
@@ -305,12 +306,12 @@ public class GameSquareInput : MonoBehaviour
         string originalText = "Check\nSolution";// winText.text;
         if (CheckWin())
         {
-            if (rectangles.Count == sequenceOfN[idxN])
+            if (rectangles.Count == NController.GetN())
             {
                 //winText.text = "You won!";
                 audioManager.PlayWin();
 
-                switch (sequenceOfN[idxN])
+                switch (NController.GetN())
                 {
                     case 5:
                         gameUI.EnableNPlus3();
