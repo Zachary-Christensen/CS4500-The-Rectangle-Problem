@@ -324,7 +324,7 @@ public class RectangleController : MonoBehaviour
         }
         rectangle.RectanglePerimeter.SpriteRenderer.sortingOrder = rectangles.Count;
 
-        transform.position = rectangle.transform.position;
+        selectionCursor.SetPosition(rectangle.transform.position);
         selectedRectangle = rectangle;
 
         dropDownScaleController.SetValue(selectedRectangle.scaleDropdownValue);
