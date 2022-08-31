@@ -169,7 +169,6 @@ public class GameManager : MonoBehaviour
         {
             if (rectangleController.DoesRectangleCountEqualGoalCount)
             {
-                //winText.text = "You won!";
                 audioManager.PlayWin();
 
                 switch (sequenceOfNController.GetN())

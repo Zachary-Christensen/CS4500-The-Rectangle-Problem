@@ -1888,7 +1888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d9c2cb9115466439b460b7bfac4e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sequenceOfNController: {fileID: 0}
+  sequenceOfNController: {fileID: 1940164957}
   gameUI: {fileID: 311756330}
   gameRules: {fileID: 1743873762}
   previousSolutions: {fileID: 598971895}
@@ -13349,7 +13349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 246d8732eaa73e34a9b8b6dc9f76d8a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
 --- !u!4 &1439751006
 Transform:
   m_ObjectHideFlags: 0
