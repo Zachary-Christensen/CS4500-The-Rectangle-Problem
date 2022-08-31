@@ -35,7 +35,7 @@ public class RectangleController : MonoBehaviour
     public SequenceOfNController sequenceOfNController;
     public TextController textController;
 
-    private Corner[] Corners => selectedRectangle.RectanglePerimeter.corners.Keys.ToArray();
+    private Corner[] Corners => new Corner[] { Corner.TopLeft, Corner.TopRight, Corner.BottomLeft, Corner.BottomRight };
 
 
     public List<Vector2> GetSelectedRectangleOverlappingCorners()
